@@ -1,7 +1,7 @@
 {
-  "name": "@turbowarp/packager",
+  "name": "sidekick-packager",
   "version": "1.8.0",
-  "description": "Converts Scratch projects into HTML files, zip archives, or executable programs for Windows, macOS, and Linux.",
+  "description": "Converts Scratch projects into HTML files, zip archives, or executable programs for Windows, macOS, and Linux; version customized for Sidekick.",
   "main": "dist/packager.js",
   "scripts": {
     "start": "webpack serve",
@@ -18,24 +18,24 @@
     "postpublish": "node src/build/nodejs/update-readme.js restore"
   },
   "author": "GarboMuffin",
-  "homepage": "https://github.com/TurboWarp/packager#readme",
+  "homepage": "https://github.com/Menersar/sidekick-packager#readme",
   "keywords": [
     "scratch",
     "packager"
   ],
   "bugs": {
-    "url": "https://github.com/TurboWarp/packager/issues"
+    "url": "https://github.com/Menersar/sidekick-packager/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/TurboWarp/packager.git"
+    "url": "https://github.com/Menersar/sidekick-packager.git"
   },
   "funding": "https://github.com/sponsors/GarboMuffin",
   "license": "Apache-2.0",
   "dependencies": {
     "@fiahfy/icns": "0.0.7",
-    "@turbowarp/json": "^0.1.1",
-    "@turbowarp/sbdl": "^2.3.0",
+    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git",
+    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git",
     "cross-fetch": "^3.1.4",
     "jszip": "^3.7.1",
     "sha.js": "^2.4.11"
@@ -54,12 +54,12 @@
     "html-webpack-plugin": "^4.5.2",
     "jest": "^27.4.5",
     "rimraf": "^2.7.1",
-    "scratch-audio": "git+https://github.com/TurboWarp/scratch-audio.git",
-    "scratch-render": "git+https://github.com/TurboWarp/scratch-render.git#develop",
+    "scratch-audio": "git+https://github.com/Menersar/scratch-audio.git",
+    "scratch-render": "git+https://github.com/Menersar/scratch-render.git#sidekick",
     "scratch-render-fonts": "^1.0.0-prerelease.20210401210003",
-    "scratch-storage": "git+https://github.com/TurboWarp/scratch-storage.git#develop",
-    "scratch-svg-renderer": "git+https://github.com/TurboWarp/scratch-svg-renderer.git#develop",
-    "scratch-vm": "git+https://github.com/TurboWarp/scratch-vm.git#develop",
+    "scratch-storage": "git+https://github.com/Menersar/scratch-storage.git#sidekick",
+    "scratch-svg-renderer": "git+https://github.com/Menersar/scratch-svg-renderer.git#sidekick",
+    "scratch-vm": "git+https://github.com/Menersar/scratch-vm.git#sidekick",
     "style-loader": "^2.0.0",
     "svelte": "^3.44.3",
     "svelte-loader": "^3.1.2",
