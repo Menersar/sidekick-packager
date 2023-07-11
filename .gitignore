@@ -1,6 +1,7 @@
 node_modules
 dist
 *.zip
+package-lock.json
 
 # Related to Node.js API and related demo scripts
 demo_output*
