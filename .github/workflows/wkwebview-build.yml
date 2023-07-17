@@ -2,9 +2,9 @@ name: WKWebView Build
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-    - wkwebview/**
+  # push:
+  #   paths:
+  #   - wkwebview/**
 
 jobs:
   build:
