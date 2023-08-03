@@ -246,7 +246,7 @@
           <input type="text" value={getDisplayedProjectURL()} spellcheck="false" on:keypress={submitOnEnter} on:input={handleInput} on:focus={handleFocus}>
         {/if}
       </div>
-      <!-- TurboWarp Desktop looks for the file-input-option class for special handling, so be careful when modifying this. -->
+      <!-- Sidekick Desktop looks for the file-input-option class for special handling, so be careful when modifying this. -->
       <div class="option file-input-option">
         <label>
           <input type="radio" name="project-type" bind:group={$type} value="file">
@@ -277,8 +277,8 @@
           message={$_('select.unsharedProjectsMore')}
           values={{
             link: {
-              text: 'https://docs.turbowarp.org/unshared-projects',
-              href: 'https://docs.turbowarp.org/unshared-projects',
+              text: 'https://github.com/Mixality/Sidekick#unshared-projects',
+              href: 'https://github.com/Mixality/Sidekick#unshared-projects',
               newTab: true
             }
           }}

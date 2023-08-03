@@ -226,7 +226,7 @@ const makeNode = () => ({
     'cross-fetch': 'cross-fetch',
     'sha.js': 'sha.js',
     '@fiahfy/icns': '@fiahfy/icns',
-    '@turbowarp/sbdl': '@turbowarp/sbdl'
+    'sidekick-sbdl': 'sidekick-sbdl'
   },
   module: {
     rules: [

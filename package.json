@@ -34,11 +34,11 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@fiahfy/icns": "0.0.7",
-    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git",
-    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git",
     "cross-fetch": "^3.1.4",
     "jszip": "^3.7.1",
-    "sha.js": "^2.4.11"
+    "sha.js": "^2.4.11",
+    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git",
+    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
@@ -60,6 +60,8 @@
     "scratch-storage": "git+https://github.com/Menersar/scratch-storage.git#sidekick",
     "scratch-svg-renderer": "git+https://github.com/Menersar/scratch-svg-renderer.git#sidekick",
     "scratch-vm": "git+https://github.com/Menersar/scratch-vm.git#sidekick",
+    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git",
+    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git",
     "style-loader": "^2.0.0",
     "svelte": "^3.44.3",
     "svelte-loader": "^3.1.2",

@@ -1,4 +1,4 @@
-const ExtendedJSON = require('@turbowarp/json');
+const ExtendedJSON = require('sidekick-json');
 
 /**
  * Converts string from unpack method into a project object. Note: this method

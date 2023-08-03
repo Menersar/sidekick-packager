@@ -10,6 +10,7 @@ jobs:
         os:
         - macos-latest
         - windows-latest
+        # ??? Reason for not 'ubuntu-latest'? !!!
         # - ubuntu-latest
 
     runs-on: ${{ matrix.os }}
@@ -18,7 +19,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with:
-        node-version: 14
+        node-version: 16
     - name: Install dependencies
       run: |
         cd electron-bin

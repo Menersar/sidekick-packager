@@ -138,7 +138,7 @@
           values={{
             embedding: {
               text: $_('p4.description2-embedding'),
-              href: 'https://docs.turbowarp.org/embedding'
+              href: 'https://github.com/Mixality/Sidekick#embedding'
             }
           }}
         />
@@ -222,7 +222,7 @@
       {/if}
     </div>
     <div>
-      <a href="https://docs.turbowarp.org/packager">{$_('p4.documentation')}</a>
+      <a href="https://github.com/Mixality/Sidekick#packager">{$_('p4.documentation')}</a>
     </div>
     <div>
       <SelectTheme />

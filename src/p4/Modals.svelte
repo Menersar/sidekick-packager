@@ -127,8 +127,8 @@
             message={$_('select.unsharedProjectsMore')}
             values={{
               link: {
-                text: 'https://docs.turbowarp.org/unshared-projects',
-                href: 'https://docs.turbowarp.org/unshared-projects',
+                text: 'https://github.com/Mixality/Sidekick#unshared-projects',
+                href: 'https://github.com/Mixality/Sidekick#unshared-projects',
                 newTab: true
               }
             }}

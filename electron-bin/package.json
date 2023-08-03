@@ -1,5 +1,5 @@
 {
-  "name": "@turbowarp/packager-electron-bin",
+  "name": "sidekick-packager-electron-bin",
   "version": "1.0.0",
   "private": true,
   "dependencies": {

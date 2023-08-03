@@ -1,13 +1,13 @@
 /* inserted by pull.js */
-import _twAsset0 from "./active.png";
-import _twAsset1 from "./close.svg";
-import _twAsset2 from "./cursor.png";
-import _twAsset3 from "./dot.svg";
-const _twGetAsset = (path) => {
-  if (path === "/active.png") return _twAsset0;
-  if (path === "/close.svg") return _twAsset1;
-  if (path === "/cursor.png") return _twAsset2;
-  if (path === "/dot.svg") return _twAsset3;
+import _sidekickAsset0 from "./active.png";
+import _sidekickAsset1 from "./close.svg";
+import _sidekickAsset2 from "./cursor.png";
+import _sidekickAsset3 from "./dot.svg";
+const _sidekickGetAsset = (path) => {
+  if (path === "/active.png") return _sidekickAsset0;
+  if (path === "/close.svg") return _sidekickAsset1;
+  if (path === "/cursor.png") return _sidekickAsset2;
+  if (path === "/dot.svg") return _sidekickAsset3;
   throw new Error(`Unknown asset: ${path}`);
 };
 
@@ -119,7 +119,7 @@ export default async function (scaffolding, pointerlock) {
   const virtualCursorElement = document.createElement("img");
   virtualCursorElement.hidden = true;
   virtualCursorElement.className = "sa-gamepad-cursor";
-  virtualCursorElement.src = _twGetAsset("/cursor.png");
+  virtualCursorElement.src = _sidekickGetAsset("/cursor.png");
 
   let hideCursorTimeout;
 
@@ -158,7 +158,7 @@ export default async function (scaffolding, pointerlock) {
   });
 
   let getCanvasSize;
-  // Support modern ResizeObserver and slow getBoundingClientRect version for improved browser support (matters for TurboWarp)
+  // Support modern ResizeObserver and slow getBoundingClientRect version for improved browser support (matters for Sidekick)
   if (window.ResizeObserver) {
     let canvasWidth = width;
     let canvasHeight = height;

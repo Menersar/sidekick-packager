@@ -27,8 +27,10 @@ If this is set to an empty string, the link is removed.
 */
 
 module.exports = {
-  APP_NAME: 'TurboWarp Packager',
-  WEBSITE: 'https://packager.turbowarp.org/',
+  APP_NAME: 'Sidekick Packager',
+  // !!! CHANGE !!!
+//   WEBSITE: 'https://mixality.github.io/Sidekick/packager/',
+  WEBSITE: 'https://menersar.github.io/Sidekick/packager/',
   COPYRIGHT_NOTICE: `Copyright (C) 2021-2022 Thomas Weber
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,14 +45,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.`,
   ACCENT_COLOR: '#ff4c4c',
-  SOURCE_CODE: 'https://github.com/TurboWarp/packager',
+  // !!! CHANGE !!!
+//   SOURCE_CODE: 'https://github.com/Mixality/Sidekick/packager',
+  SOURCE_CODE: 'https://github.com/Menersar/Sidekick/packager',
   FEEDBACK_PRIMARY: {
     name: 'Scratch',
     link: 'https://scratch.mit.edu/users/GarboMuffin/#comments'
   },
   FEEDBACK_SECONDARY: {
     name: 'GitHub',
-    link: 'https://github.com/TurboWarp/packager/issues'
+    // !!! CHANGE !!!
+    // link: 'https://github.com/Mixality/Sidekick/packager/issues'
+    link: 'https://github.com/Menersar/Sidekick/packager/issues'
   },
   DONATE: 'https://github.com/sponsors/GarboMuffin',
 };
