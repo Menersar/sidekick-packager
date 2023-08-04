@@ -138,7 +138,9 @@
           values={{
             embedding: {
               text: $_('p4.description2-embedding'),
-              href: 'https://github.com/Mixality/Sidekick#embedding'
+              // !!! CHANGE !!!
+              // href: 'https://github.com/Mixality/Sidekick#embedding'
+              href: 'https://github.com/Menersar/Sidekick#embedding'
             }
           }}
         />
@@ -222,7 +224,9 @@
       {/if}
     </div>
     <div>
-      <a href="https://github.com/Mixality/Sidekick#packager">{$_('p4.documentation')}</a>
+      <!-- !!! CHANGE !!! -->
+      <!-- <a href="https://github.com/Mixality/Sidekick#packager">{$_('p4.documentation')}</a> -->
+      <a href="https://github.com/Menersar/Sidekick#packager">{$_('p4.documentation')}</a>
     </div>
     <div>
       <SelectTheme />

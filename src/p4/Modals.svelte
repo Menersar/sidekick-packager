@@ -127,8 +127,12 @@
             message={$_('select.unsharedProjectsMore')}
             values={{
               link: {
-                text: 'https://github.com/Mixality/Sidekick#unshared-projects',
-                href: 'https://github.com/Mixality/Sidekick#unshared-projects',
+                // !!! CHANGE !!!
+                // text: 'https://github.com/Mixality/Sidekick#unshared-projects',
+                text: 'https://github.com/Menersar/Sidekick#unshared-projects',
+                // !!! CHANGE !!!
+                // href: 'https://github.com/Mixality/Sidekick#unshared-projects',
+                href: 'https://github.com/Menersar/Sidekick#unshared-projects',
                 newTab: true
               }
             }}

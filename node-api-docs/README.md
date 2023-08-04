@@ -24,7 +24,7 @@ We intend to release an updated version of the npm module to npm with every upda
 
 All features should work, with the following exceptions:
 
- - macOS apps in the NW.js or WKWebView environments do not support custom icons and must always use the default icon
+- macOS apps in the NW.js or WKWebView environments do not support custom icons and must always use the default icon
 
 ### Browser support
 
@@ -63,8 +63,14 @@ const projectData = fs.readFileSync('project.sb3');
 const fetch = require('cross-fetch').default; // or whatever your favorite HTTP library is
 const id = '437419376';
 const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
+// !!! CHANGE !!!
+// const projectMetadataSidekick = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
+const projectMetadataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/api/projects/${id}`)).json();
 const token = projectMetadata.project_token;
 const projectData = await (await fetch(`https://projects.scratch.mit.edu/${id}?token=${token}`)).arrayBuffer();
+// !!! CHANGE !!!
+// const projectDataSidekick = await (await fetch(`https://mixality.github.io/Sidekick/projects/${id}?token=${token}`)).arrayBuffer();
+const projectDataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/projects/${id}?token=${token}`)).arrayBuffer();
 ```
 
 Now you have to tell the packager to load the project. The packager will parse it, do some analysis, and download any needed assets if the input was just a project.json. This must be done once for every project. The result of this processes can be reused as many times as you want.

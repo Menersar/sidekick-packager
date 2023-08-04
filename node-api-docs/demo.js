@@ -9,8 +9,11 @@ const Packager = require('../dist/packager');
 const run = async () => {
   // Example of how to fetch() a project from Scratch:
   const id = '437419376';
-//   const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
-  const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
+  // !!! CHANGE !!!
+  // const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
+//   const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
+//   const projectMetadata = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
+  const projectMetadata = await (await fetch(`https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`)).json();
   const token = projectMetadata.project_token;
   const projectData = await (await fetch(`https://projects.scratch.mit.edu/${id}?token=${token}`)).arrayBuffer();
 

@@ -4,7 +4,9 @@
   export let slug;
   export let href;
 
-  const link = slug ? `https://github.com/Mixality/Sidekick#${slug}` : href;
+  // !!! CHANGE !!!
+  // const link = slug ? `https://github.com/Mixality/Sidekick#${slug}` : href;
+  const link = slug ? `https://github.com/Menersar/Sidekick#${slug}` : href;
 </script>
 
 <style>

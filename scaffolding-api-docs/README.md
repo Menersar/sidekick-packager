@@ -1,33 +1,33 @@
 # Scaffolding API
 
-## Scaffolding's API is in an ALPHA state. It WILL change in ways that are backwards incompatible. Please pin to exact versions to avoid pain later!
+## Scaffolding's API is in an ALPHA state. It WILL change in ways that are backwards incompatible. Please pin to exact versions to avoid pain later
 
-## This documentation is very work in progress. Report any errors you find or any issues you encounter.
+## This documentation is very work in progress. Report any errors you find or any issues you encounter
 
 Scaffolding is the project player used by the packager.
 
 Here's what Scaffolding does for you:
 
- - Loads the entire Scratch VM and connects everything together
- - Forwards user input to Scratch and implements things like sprite dragging
- - Removes unnecessary parts of Scratch that you don't need just for running projects
- - Implements the "ask and wait" block
- - Implements highly optimized (much faster than scratch-gui) variable and list monitors with context menus and file dropping
- - Implements cloud variables using a Scratch-compatible WebSocket server or local storage
- - Implements video sensing
+- Loads the entire Scratch VM and connects everything together
+- Forwards user input to Scratch and implements things like sprite dragging
+- Removes unnecessary parts of Scratch that you don't need just for running projects
+- Implements the "ask and wait" block
+- Implements highly optimized (much faster than scratch-gui) variable and list monitors with context menus and file dropping
+- Implements cloud variables using a Scratch-compatible WebSocket server or local storage
+- Implements video sensing
 
 Here's what Scaffolding doesn't do for you:
 
- - Green flag screen
- - Controls
- - A progress bar
+- Green flag screen
+- Controls
+- A progress bar
 
 ## Versions
 
 There are two versions of Scaffolding:
 
- - scaffolding-full (4.6MB) - contains every part of Scratch
- - scaffolding-min (2.5MB) - contains all of Scratch EXCEPT sound files used by the music extension. Significantly smaller than scaffolding-full.
+- scaffolding-full (4.6MB) - contains every part of Scratch
+- scaffolding-min (2.5MB) - contains all of Scratch EXCEPT sound files used by the music extension. Significantly smaller than scaffolding-full.
 
 Scratch is a large application so either script is very large. If you don't need the music extension to function, use scaffolding-min.
 
@@ -61,7 +61,7 @@ You can only load one version of Scaffolding on a page, but you can create as ma
 <script src="https://cdn.jsdelivr.net/npm/@turbowarp/packager@0.0.0/dist/scaffolding/scaffolding-full.js"></script>
 ```
 
-Replace `0.0.0` with the latest release from https://github.com/TurboWarp/packager/releases, for example `1.0.0`.
+Replace `0.0.0` with the latest release from <https://github.com/TurboWarp/packager/releases>, for example `1.0.0`.
 
 DO NOT use versions like `@1` or `@latest` -- your website will break if (when) Scaffolding's API changes!
 
@@ -164,6 +164,9 @@ Downloading shared Scratch projects can be done manually with something like thi
 ```js
 const id = '437419376';
 const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
+// !!! CHANGE !!!
+// const projectMetadataSidekick = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
+const projectMetadataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/api/projects/${id}`)).json();
 const token = projectMetadata.project_token;
 const projectData = await (await fetch(`https://projects.scratch.mit.edu/${id}?token=${token}`)).arrayBuffer();
 ```

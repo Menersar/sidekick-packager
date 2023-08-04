@@ -44,10 +44,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.`,
-  ACCENT_COLOR: '#ff4c4c',
+  ACCENT_COLOR: '#c6ddaf',
   // !!! CHANGE !!!
-//   SOURCE_CODE: 'https://github.com/Mixality/Sidekick/packager',
-  SOURCE_CODE: 'https://github.com/Menersar/Sidekick/packager',
+//   SOURCE_CODE: 'https://github.com/Mixality/packager',
+  SOURCE_CODE: 'https://github.com/Menersar/packager',
   FEEDBACK_PRIMARY: {
     name: 'Scratch',
     link: 'https://scratch.mit.edu/users/GarboMuffin/#comments'
@@ -55,8 +55,8 @@ limitations under the License.`,
   FEEDBACK_SECONDARY: {
     name: 'GitHub',
     // !!! CHANGE !!!
-    // link: 'https://github.com/Mixality/Sidekick/packager/issues'
-    link: 'https://github.com/Menersar/Sidekick/packager/issues'
+    // link: 'https://github.com/Mixality/packager/issues'
+    link: 'https://github.com/Menersar/packager/issues'
   },
   DONATE: 'https://github.com/sponsors/GarboMuffin',
 };

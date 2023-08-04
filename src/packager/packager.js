@@ -819,16 +819,16 @@ cd "$(dirname "$0")"
     // a problematic TLD. These are the same server and same variables, just different domain.
 
     // !!! CHANGE !!!
-    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
+    // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
     // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://mixality.github.io/Sidekick/clouddata' ? [
-    // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://menersar.github.io/Sidekick/clouddata' ? [
+    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://menersar.github.io/Sidekick/clouddata' ? [
     // !!! CHANGE !!!
-      'wss://clouddata.turbowarp.org',
-      'wss://clouddata.turbowarp.xyz'
+    //   'wss://clouddata.turbowarp.org',
+    //   'wss://clouddata.turbowarp.xyz'
     //   'wss://mixality.github.io/Sidekick/clouddata',
     //   'wss://mixality.github.io/Sidekick/clouddata'
-    //   'wss://menersar.github.io/Sidekick/clouddata',
-    //   'wss://menersar.github.io/Sidekick/clouddata'
+      'wss://menersar.github.io/Sidekick/clouddata',
+      'wss://menersar.github.io/Sidekick/clouddata'
     ] : this.options.cloudVariables.cloudHost;
     return `new Scaffolding.Cloud.WebSocketProvider(${JSON.stringify(cloudHost)}, ${JSON.stringify(this.options.projectId)})`;
   }
@@ -1623,9 +1623,10 @@ Packager.DEFAULT_OPTIONS = () => ({
   cloudVariables: {
     mode: 'ws',
     // !!!! CHANGE !!!!
-    cloudHost: 'wss://clouddata.turbowarp.org',
+    // https://www.quora.com/What-is-the-difference-between-http-https-ws-and-wss
+    // cloudHost: 'wss://clouddata.turbowarp.org',
     // cloudHost: 'wss://mixality.github.io/Sidekick/clouddata',
-    // cloudHost: 'wss://menersar.github.io/Sidekick/clouddata',
+    cloudHost: 'wss://menersar.github.io/Sidekick/clouddata',
     custom: {},
     specialCloudBehaviors: false,
     unsafeCloudBehaviors: false,
