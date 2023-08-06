@@ -819,12 +819,19 @@ cd "$(dirname "$0")"
     // a problematic TLD. These are the same server and same variables, just different domain.
 
     // !!! CHANGE !!!
-    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
+    // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
+    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.scratch.mit.edu' ? [
     // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://mixality.github.io/Sidekick/clouddata' ? [
     // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://menersar.github.io/Sidekick/clouddata' ? [
     // !!! CHANGE !!!
-      'wss://clouddata.turbowarp.org',
-      'wss://clouddata.turbowarp.xyz'
+    //   'wss://clouddata.turbowarp.org',
+    //   'wss://clouddata.turbowarp.xyz'
+         
+    // !!!!!HERE!!!!!
+    'wss://clouddata.scratch.mit.edu',
+    'wss://clouddata.scratch.mit.edu'
+
+
     //   'wss://mixality.github.io/Sidekick/clouddata',
     //   'wss://mixality.github.io/Sidekick/clouddata'
     //   'wss://menersar.github.io/Sidekick/clouddata',
@@ -1620,13 +1627,19 @@ Packager.DEFAULT_OPTIONS = () => ({
     gamepad: false,
     pointerlock: false,
   },
+  // https://scratch.mit.edu/discuss/topic/509859/
+  // https://clouddata.scratch.mit.edu/logs?projectid=488029945&limit=1&offset=0
+  // https://www.quora.com/What-is-the-difference-between-http-https-ws-and-wss
+  // cloudHost: 'wss://mixality.github.io/Sidekick/clouddata',
+  // cloudHost: 'wss://menersar.github.io/Sidekick/clouddata',
+  // !!!! CHANGE !!!!
   cloudVariables: {
     mode: 'ws',
-    // !!!! CHANGE !!!!
-    // https://www.quora.com/What-is-the-difference-between-http-https-ws-and-wss
-    cloudHost: 'wss://clouddata.turbowarp.org',
-    // cloudHost: 'wss://mixality.github.io/Sidekick/clouddata',
-    // cloudHost: 'wss://menersar.github.io/Sidekick/clouddata',
+
+    // !!!!!HERE!!!!!
+    // cloudHost: 'wss://clouddata.turbowarp.org',
+    cloudHost: 'wss://clouddata.scratch.mit.edu',
+
     custom: {},
     specialCloudBehaviors: false,
     unsafeCloudBehaviors: false,

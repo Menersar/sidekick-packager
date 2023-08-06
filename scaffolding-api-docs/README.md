@@ -163,10 +163,12 @@ Downloading shared Scratch projects can be done manually with something like thi
 
 ```js
 const id = '437419376';
-const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
+// !!! CHANGE !!!
+const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
+// const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
 // !!! CHANGE !!!
 // const projectMetadataSidekick = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
-const projectMetadataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/api/projects/${id}`)).json();
+// const projectMetadataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/api/projects/${id}`)).json();
 const token = projectMetadata.project_token;
 const projectData = await (await fetch(`https://projects.scratch.mit.edu/${id}?token=${token}`)).arrayBuffer();
 ```

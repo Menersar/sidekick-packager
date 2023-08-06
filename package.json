@@ -38,8 +38,8 @@
     "cross-fetch": "^3.1.4",
     "jszip": "^3.7.1",
     "sha.js": "^2.4.11",
-    "sidekick-json": "github:Menersar/sidekick-json",
-    "sidekick-sbdl": "github:Menersar/sidekick-sbdl"
+    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git#sidekick",
+    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git#sidekick"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
@@ -61,8 +61,8 @@
     "scratch-storage": "git+https://github.com/Menersar/scratch-storage.git#sidekick",
     "scratch-svg-renderer": "git+https://github.com/Menersar/scratch-svg-renderer.git#sidekick",
     "scratch-vm": "git+https://github.com/Menersar/scratch-vm.git#sidekick",
-    "sidekick-json": "github:Menersar/sidekick-json",
-    "sidekick-sbdl": "github:Menersar/sidekick-sbdl",
+    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git#sidekick",
+    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git#sidekick",
     "style-loader": "^2.0.0",
     "svelte": "^3.44.3",
     "svelte-loader": "^3.1.2",

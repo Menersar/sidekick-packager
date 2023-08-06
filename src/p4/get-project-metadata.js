@@ -5,19 +5,6 @@ const getProjectMetadata = async (id) => {
   try {
     const meta = await request({
       url: [
-        // !!!!
-        // !!! ???
-        // Hopefully one of these URLs won't be blocked.
-        // `https://trampoline.turbowarp.org/api/projects/${id}`,
-        // `https://trampoline.turbowarp.xyz/api/projects/${id}`
-
-        // !!! CHANGE !!!
-        // `https://mixality.github.io/Sidekick/api/projects/${id}`,
-        // // `https://mixality.github.io/Sidekick/api/projects/${id}`,
-        // `https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`,
-        // `https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`,
-
-
         `https://api.scratch.mit.edu/projects/${id}`,
         `https://api.scratch.mit.edu/projects/${id}`
       ],
