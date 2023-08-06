@@ -4,16 +4,22 @@ const fetch = require('cross-fetch').default;
 
 // You should use require('sidekick-packager') instead
 // We use a strange require() in this demo because we use this to test the API internally
-const Packager = require('../dist/packager');
+// const Packager = require('../dist/packager');
+const Packager = require('sidekick-packager')
 
 const run = async () => {
   // Example of how to fetch() a project from Scratch:
   const id = '437419376';
   // !!! CHANGE !!!
   // const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
-//   const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
-//   const projectMetadata = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
-  const projectMetadata = await (await fetch(`https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`)).json();
+  // const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
+  // const projectMetadata = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
+  // const projectMetadata = await (await fetch(`https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`)).json();
+  
+//   const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}?nocache=${Date.now()}`)).json();
+  const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
+  
+  
   const token = projectMetadata.project_token;
   const projectData = await (await fetch(`https://projects.scratch.mit.edu/${id}?token=${token}`)).arrayBuffer();
 

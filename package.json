@@ -15,7 +15,8 @@
     "build-node-prod": "cross-env NODE_ENV=production npm run build-node",
     "test": "jest",
     "prepublishOnly": "npm run test && npm run build-node-prod && node src/build/nodejs/update-readme.js node",
-    "postpublish": "node src/build/nodejs/update-readme.js restore"
+    "postpublish": "node src/build/nodejs/update-readme.js restore",
+    "build-all": "npm run build && npm run build-prod && npm run build-standalone && npm run build-standalone-prod && npm run build-node && npm run build-node-prod"
   },
   "author": "GarboMuffin",
   "homepage": "https://github.com/Menersar/sidekick-packager#readme",
@@ -37,8 +38,8 @@
     "cross-fetch": "^3.1.4",
     "jszip": "^3.7.1",
     "sha.js": "^2.4.11",
-    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git",
-    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git"
+    "sidekick-json": "github:Menersar/sidekick-json",
+    "sidekick-sbdl": "github:Menersar/sidekick-sbdl"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
@@ -60,8 +61,8 @@
     "scratch-storage": "git+https://github.com/Menersar/scratch-storage.git#sidekick",
     "scratch-svg-renderer": "git+https://github.com/Menersar/scratch-svg-renderer.git#sidekick",
     "scratch-vm": "git+https://github.com/Menersar/scratch-vm.git#sidekick",
-    "sidekick-json": "git+https://github.com/Menersar/sidekick-json.git",
-    "sidekick-sbdl": "git+https://github.com/Menersar/sidekick-sbdl.git",
+    "sidekick-json": "github:Menersar/sidekick-json",
+    "sidekick-sbdl": "github:Menersar/sidekick-sbdl",
     "style-loader": "^2.0.0",
     "svelte": "^3.44.3",
     "svelte-loader": "^3.1.2",

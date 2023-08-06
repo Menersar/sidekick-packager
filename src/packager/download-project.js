@@ -1,4 +1,5 @@
 import optimizeSb3Json from './minify/sb3';
+// import {downloadProjectFromBuffer} from '@turbowarp/sbdl';
 import {downloadProjectFromBuffer} from 'sidekick-sbdl';
 
 const unknownAnalysis = () => ({

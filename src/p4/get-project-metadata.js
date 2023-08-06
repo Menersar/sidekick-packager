@@ -14,8 +14,12 @@ const getProjectMetadata = async (id) => {
         // !!! CHANGE !!!
         // `https://mixality.github.io/Sidekick/api/projects/${id}`,
         // // `https://mixality.github.io/Sidekick/api/projects/${id}`,
-        `https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`,
-        `https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`,
+        // `https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`,
+        // `https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`,
+
+
+        `https://api.scratch.mit.edu/projects/${id}`,
+        `https://api.scratch.mit.edu/projects/${id}`
       ],
       type: 'json'
     });

@@ -1,106 +1,155 @@
-# TurboWarp Packager
+# Node.js API
 
-https://packager.turbowarp.org/
+## Installing
 
-Converts Scratch projects into HTML files, zip archives, or executable programs for Windows, macOS, and Linux.
-
-## Development
-
-Install dependencies:
-
-```
-npm ci
+```bash
+npm install --save-exact @turbowarp/packager
 ```
 
-Start in development mode:
+We suggest that you use `--save-exact` (or, with yarn, `--exact`) to make sure you always install the same version. This is important because we don't promise API compatibility across even minor updates.
 
-```
-npm start
-```
+## About the API
 
-Then visit http://localhost:8947. Manually refresh to see changes.
+### Stability
 
-Packaged projects generated while in development mode should not be distributed. Instead, you should run a production build to significantly reduce file size of both the website and the packager.
+The Node.js API is still in beta.
 
-```
-npm run build-prod
-```
+There are no promises of API stability between updates even across minor updates. Always pin to an exact version and don't update without testing. We don't go out of our way to break the API, but we don't let it stop us from making changes. We try to mention noteworthy changes in the [GitHub releases](https://github.com/TurboWarp/packager/releases) changelog.
 
-Output will be located in the `dist` folder.
+### Release cadence
 
-The general layout of `src` is:
+We intend to release an updated version of the npm module to npm with every update of [TurboWarp Desktop](https://github.com/TurboWarp/desktop), which currently happens about once a month.
 
- - packager: The code that downloads and packages projects.
- - p4: The Svelte website for the packager. "p4" is the name that the packager uses internally to refer to itself.
- - scaffolding: A minimal Scratch project player. Handles most of the boring details of running Scratch projects like handling mouse inputs.
- - common: Some files used by both scaffolding and the packager.
- - addons: Optional addons such as gamepad support or pointerlock.
- - locales: Translations. en.json contains the original English messages. The other languages are translated by volunteers and imported by an automated script. ([you can help](https://docs.turbowarp.org/translate))
- - build: Various build-time scripts such as webpack plugins and loaders.
+### Feature support
 
-## Tips for forks
+All features should work, with the following exceptions:
 
-We strive to make the packager easy to fork, even for mods that aren't based on TurboWarp. Reading this section, at least the first half, should make it much easier to do so.
+- macOS apps in the NW.js or WKWebView environments do not support custom icons and must always use the default icon
 
-### Packages
+### Browser support
 
-If you want to change the VM/renderer/etc. used, just `npm install` or `npm link` a different scratch-vm/scratch-render/etc. and rebuild. You can even install a vanilla scratch-vm and all core functionality will still work (but optional features such as interpolation, high quality pen, stage size, etc. may not work)
+The Node.js module as published on npm is not intended to work in a browser regardless of any build tool such as webpack. If you need to run in a browser, fork this repository directly and modify the interface as you see fit.
 
-If you encounter errors about dependencies missing, usually these will be fixed after running another `npm install`.
+### Large assets
 
-### Deployment
+Large assets such as Electron binaries are not stored in this repository and will be downloaded from a remote server on demand. While we aren't actively removing old files, we can't promise they will exist forever. Downloads are validated with a SHA-256 checksum and cached locally.
 
-The packager is deployed as a simple static website. You can host it anywhere by just copying the `dist` folder after a build.
+Large assets are cached in `node_modules/@turbowarp/packager/.packager-cache`. You may want to periodically clean this folder.
 
-We use GitHub Actions and GitHub Pages to manage our deployment. If you want to do this too:
+## Using the API
 
- - Fork the repository on GitHub and push your changes.
- - Go to your fork's settings on GitHub and enable GitHub Pages with the source set to GitHub Actions.
- - Go to the "Actions" tab and enable GitHub Actions if it isn't already enabled.
- - Go to your fork > Actions > Deploy > Manually run the action on the branch of your choice (probably master).
- - In a few minutes, your site will automatically be built and deployed to GitHub Pages.
+See demo.js or demo-simple.js for a full example.
 
-### Branding
+First, you can import the module like this:
 
-We ask that you at least take a moment to rename the website.
-
- - Update the brand strings (`src/packager/brand.js`) to use your own app name, links, etc.
- - Update the privacy policy (`static/privacy.html`) to reflect your privacy practices.
-
-### Large files
-
-Large files such as NW.js, Electron, and WKWebView executables are stored on an external server outside of this repository. While we aren't actively removing old files (the server still serves files unused since November 2020), we can't promise they will exist forever. The packager uses a secure checksum to validate these downloads. Forks are free to use our servers, but it's easy to setup your own if you'd prefer (it's just a static file server; see `src/packager/large-assets.js` for more information).
-
-### Service worker
-
-Set the environment variable `ENABLE_SERVICE_WORKER` to `1` to enable service worker for offline support (experimental, not 100% reliable). This is not recommended in development. Our GitHub Actions deploy script uses this by default.
-
-## Standalone builds
-
-The packager supports generating "standalone builds" that are single HTML files containing the entire packager. Large files such as Electron binaries will still be downloaded from a remote server as needed. You can download prebuilt standalone builds from [our GitHub releases](https://github.com/TurboWarp/packager/releases). These can be useful if our website is blocked or you don't have a reliable internet connection. Note that standalone builds do not contain an update checker, so do check on your own occasionally.
-
-To make a production standalone build locally:
-
-```
-npm run build-standalone-prod
+```js
+const Packager = require('@turbowarp/packager');
 ```
 
-The build outputs to `dist/standalone.html`.
+### Load a project
 
-## Node.js module and API
+Next you have to get a project file from somewhere. It can be a project.json or a full sb, sb2, or sb3 file. The packager doesn't provide any API for this, you have to find it on your own. Your data must be an ArrayBuffer, Uint8Array, or Node.js Buffer.
 
-See [node-api-docs/README.md](node-api-docs/README.md) for Node.js API documentation.
+```js
+// Fetch a remote URL:
+const fetch = require('cross-fetch').default; // or whatever your favorite HTTP library is
+const projectData = await (await fetch('https://packager.turbowarp.org/example.sb3')).arrayBuffer();
 
-To build the Node.js module locally:
+// or use a local file:
+const fs = require('fs');
+const projectData = fs.readFileSync('project.sb3');
 
+// or fetch a shared Scratch project:
+const fetch = require('cross-fetch').default; // or whatever your favorite HTTP library is
+const id = '437419376';
+const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
+// !!! CHANGE !!!
+// const projectMetadataSidekick = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
+const projectMetadataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/api/projects/${id}`)).json();
+const token = projectMetadata.project_token;
+const projectData = await (await fetch(`https://projects.scratch.mit.edu/${id}?token=${token}`)).arrayBuffer();
+// !!! CHANGE !!!
+// const projectDataSidekick = await (await fetch(`https://mixality.github.io/Sidekick/projects/${id}?token=${token}`)).arrayBuffer();
+const projectDataSidekick = await (await fetch(`https://menersar.github.io/Sidekick/projects/${id}?token=${token}`)).arrayBuffer();
 ```
-npm run build-node-prod
+
+Now you have to tell the packager to load the project. The packager will parse it, do some analysis, and download any needed assets if the input was just a project.json. This must be done once for every project. The result of this processes can be reused as many times as you want.
+
+You may specify a "progress callback" that the loader may call periodically with progress updates. `type` will be a string like `assets` or `compress`. Depending on the type, `a` might be "loaded" and `b` might be "total", or `a` might be a percent [0-1] in which case `b` is unused.
+
+```js
+const progressCallback = (type, a, b) => {};
+const loadedProject = await Packager.loadProject(projectData, progressCallback);
 ```
 
-## License
+### Package the project
 
-<!-- Make sure to also update COPYRIGHT_NOTICE in src/packager/brand.js -->
+Now you can make a Packager.
 
-Copyright (C) 2021-2022 Thomas Weber
+```js
+const packager = new Packager.Packager();
+packager.project = loadedProject;
+```
 
-This project is licensed under the Apache License, version 2.0. See LICENSE for more information.
+`packager.options` has a lot of options on it for you to consider. You can log the object or see [packager.js](../src/packager/packager.js) and look for `DEFAULT_OPTIONS` to see what options are available.
+
+We recommend that you avoid overwriting the entirety of `packager.options` as this will cause issues when the structure of the options object changes in future updates. Instead, just update the properties you want to change from the defaults.
+
+```js
+// GOOD:
+packager.options.turbo = true;
+packager.options.custom.js = "/* */";
+
+// BAD (DO NOT DO THIS):
+packager.options = {
+  turbo: true,
+  custom: {
+    js: "/* */"
+  },
+  // ...
+};
+```
+
+Even if you add `...packager.options` the second example is still broken: `options.custom` also has a `css` property which is accidentally being set to `undefined` which is undefined behavior. Instead of remembering to do `...packager.options.xyz` everywhere, it's best to just avoid completely redefining options whenever possible.
+
+Some options expect an image as an argument. In the Node.js module, there is a special class to use for these, `new Packager.Image(mimeType, buffer)`:
+
+```js
+packager.options.app.icon = new Packager.Image('image/png', fs.readFileSync('icon.png'));
+```
+
+Note that a Packager is a single-use object; you must make a new Packager each time you want to package a project.
+
+Now you can finally actually package the project.
+
+```js
+const result = await packager.package();
+
+// Suggested file name including file extension based on packager's options.
+// This is not sanitized so it could contain things like path traversal exploits. Be careful.
+const filename = result.filename;
+
+// MIME type of the packaged project. Either "text/html" or "application/zip"
+const type = result.type;
+
+// The packaged project's data. Will be either a string (for type text/html) or ArrayBuffer (for type application/zip).
+const data = result.data;
+```
+
+You can also add progress listeners on the packager using something similar to the addEventListener you're familiar with. Note that these aren't actually EventTargets, just a tiny shim that looks similar, so some things like `once` won't work and the events don't have very many properties on them.
+
+```js
+// do this before calling package()
+packager.addEventListener('zip-progress', ({detail}) => {
+  // Used when compressing projects as zips
+  console.log('Packager progress zip-progress', detail);
+});
+packager.addEventListener('large-asset-fetch', ({detail}) => {
+  // Used when fetching large assets such as Electron binaries
+  console.log('Packager progress large-asset-fetch', detail);
+});
+```
+
+What you do with `data` is now entirely up to you.
+
+Be mindful of the copyright on the projects you package.

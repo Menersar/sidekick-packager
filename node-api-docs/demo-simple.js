@@ -4,7 +4,8 @@ const path = require('path');
 // !!! ???
 // You should use require('sidekick-packager') instead
 // We use a strange require() in this demo because we use this to test the API internally
-const Packager = require('../dist/packager');
+// const Packager = require('../dist/packager');
+const Packager = require('sidekick-packager')
 
 const run = async () => {
   const projectData = fs.readFileSync(path.join(__dirname, '..', 'static', 'example.sb3'));
