@@ -24,39 +24,38 @@ name is how they will be labelled in the interface and link is of course a URL
 
 DONATE is a link that people can visit to donate.
 If this is set to an empty string, the link is removed.
+
+PRIVACY_POLICY is a link to the privacy policy.
+If this is set to an empty string, the link is removed.
 */
 
 module.exports = {
-  APP_NAME: 'Sidekick Packager',
-  // !!! CHANGE !!!
-//   WEBSITE: 'https://mixality.github.io/Sidekick/packager/',
-  WEBSITE: 'https://menersar.github.io/Sidekick/packager/',
-  COPYRIGHT_NOTICE: `Copyright (C) 2021-2022 Thomas Weber
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.`,
-  ACCENT_COLOR: '#c6ddaf',
-  // !!! CHANGE !!!
-//   SOURCE_CODE: 'https://github.com/Mixality/packager',
-  SOURCE_CODE: 'https://github.com/Menersar/sidekick-packager',
-  FEEDBACK_PRIMARY: {
-    name: 'Scratch',
-    link: 'https://scratch.mit.edu/users/GarboMuffin/#comments'
-  },
-  FEEDBACK_SECONDARY: {
-    name: 'GitHub',
-    // !!! CHANGE !!!
-    // link: 'https://github.com/Mixality/packager/issues'
-    link: 'https://github.com/Menersar/sidekick-packager/issues'
-  },
-  DONATE: 'https://github.com/sponsors/GarboMuffin',
-};
+    APP_NAME: 'TurboWarp Packager',
+    WEBSITE: 'https://packager.turbowarp.org/',
+    COPYRIGHT_NOTICE: `Copyright (C) 2021-2022 Thomas Weber
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+      http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.`,
+    ACCENT_COLOR: '#ff4c4c',
+    SOURCE_CODE: 'https://github.com/TurboWarp/packager',
+    FEEDBACK_PRIMARY: {
+      name: 'Scratch',
+      link: 'https://scratch.mit.edu/users/GarboMuffin/#comments'
+    },
+    FEEDBACK_SECONDARY: {
+      name: 'GitHub',
+      link: 'https://github.com/TurboWarp/packager/issues'
+    },
+    DONATE: 'https://github.com/sponsors/GarboMuffin',
+    PRIVACY_POLICY: 'https://turbowarp.org/privacy.html',
+  };
+  

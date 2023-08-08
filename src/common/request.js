@@ -91,7 +91,6 @@ const request = async (options) => {
       if (e instanceof HTTPError && DO_NOT_USE_FALLBACK_URL_ERRORS.includes(e.status)) {
         throw e;
       }
-      // !!! CHANGE !!!
       // We'll record this error if this is the first error, or if the current error provides more information than
       // the old error. This is useful because:
       //  trampoline.turbowarp.org/... -> blocked by filter (appears to us as generic network error)

@@ -5,8 +5,9 @@ const getProjectMetadata = async (id) => {
   try {
     const meta = await request({
       url: [
-        `https://api.scratch.mit.edu/projects/${id}`,
-        `https://api.scratch.mit.edu/projects/${id}`
+        // Hopefully one of these URLs won't be blocked.
+        `https://trampoline.turbowarp.org/api/projects/${id}`,
+        `https://trampoline.turbowarp.xyz/api/projects/${id}`
       ],
       type: 'json'
     });

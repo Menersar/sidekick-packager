@@ -12,11 +12,7 @@ const run = async () => {
   const id = '437419376';
   // !!! CHANGE !!!
   // const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
-  // const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
-  // const projectMetadata = await (await fetch(`https://mixality.github.io/Sidekick/api/projects/${id}`)).json();
-  // const projectMetadata = await (await fetch(`https://menersar.github.io/Sidekick/trampoline/api/projects/${id}`)).json();
-  
-//   const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}?nocache=${Date.now()}`)).json();
+
   const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
   
   

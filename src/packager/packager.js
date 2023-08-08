@@ -118,7 +118,6 @@ const generateChromiumLicenseHTML = (licenses) => {
 const CFBundleIdentifier = 'CFBundleIdentifier';
 // Even if you fork the packager, you shouldn't change this string unless you want packaged macOS apps
 // to lose all their data.
-// !!! CHANGE !!!
 const bundleIdentifierPrefix = 'org.turbowarp.packager.userland.';
 
 // CFBundleName is displayed in the menu bar.
@@ -817,25 +816,9 @@ cd "$(dirname "$0")"
     // If using the default turbowarp.org server, we'll add a fallback for the turbowarp.xyz alias.
     // This helps work around web filters as turbowarp.org can be blocked for games and turbowarp.xyz uses
     // a problematic TLD. These are the same server and same variables, just different domain.
-
-    // !!! CHANGE !!!
-    // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
-    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.scratch.mit.edu' ? [
-    // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://mixality.github.io/Sidekick/clouddata' ? [
-    // const cloudHost = this.options.cloudVariables.cloudHost === 'wss://menersar.github.io/Sidekick/clouddata' ? [
-    // !!! CHANGE !!!
-    //   'wss://clouddata.turbowarp.org',
-    //   'wss://clouddata.turbowarp.xyz'
-         
-    // !!!!!HERE!!!!!
-    'wss://clouddata.scratch.mit.edu',
-    'wss://clouddata.scratch.mit.edu'
-
-
-    //   'wss://mixality.github.io/Sidekick/clouddata',
-    //   'wss://mixality.github.io/Sidekick/clouddata'
-    //   'wss://menersar.github.io/Sidekick/clouddata',
-    //   'wss://menersar.github.io/Sidekick/clouddata'
+    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
+      'wss://clouddata.turbowarp.org',
+      'wss://clouddata.turbowarp.xyz'
     ] : this.options.cloudVariables.cloudHost;
     return `new Scaffolding.Cloud.WebSocketProvider(${JSON.stringify(cloudHost)}, ${JSON.stringify(this.options.projectId)})`;
   }
@@ -1428,7 +1411,12 @@ cd "$(dirname "$0")"
         vm.extensionManager.loadExtensionURL(extension);
       }
 
-      ${this.options.closeWhenStopped ? `vm.runtime.on('PROJECT_RUN_STOP', () => window.close());` : ''}
+      ${this.options.closeWhenStopped ? `
+      vm.runtime.on('PROJECT_RUN_STOP', () => {
+        if (!vm.isPaused || !vm.isPaused()) {
+          window.close();
+        }
+      });` : ''}
 
       ${this.options.target.startsWith('nwjs-') ? `
       if (typeof nw !== 'undefined') {
@@ -1627,19 +1615,9 @@ Packager.DEFAULT_OPTIONS = () => ({
     gamepad: false,
     pointerlock: false,
   },
-  // https://scratch.mit.edu/discuss/topic/509859/
-  // https://clouddata.scratch.mit.edu/logs?projectid=488029945&limit=1&offset=0
-  // https://www.quora.com/What-is-the-difference-between-http-https-ws-and-wss
-  // cloudHost: 'wss://mixality.github.io/Sidekick/clouddata',
-  // cloudHost: 'wss://menersar.github.io/Sidekick/clouddata',
-  // !!!! CHANGE !!!!
   cloudVariables: {
     mode: 'ws',
-
-    // !!!!!HERE!!!!!
-    // cloudHost: 'wss://clouddata.turbowarp.org',
-    cloudHost: 'wss://clouddata.scratch.mit.edu',
-
+    cloudHost: 'wss://clouddata.turbowarp.org',
     custom: {},
     specialCloudBehaviors: false,
     unsafeCloudBehaviors: false,
