@@ -895,7 +895,7 @@ cd "$(dirname "$0")"
             // !!! CHANGE !!!
             // !!!!!HERE!!!!!
             "wss://clouddata.scratch.mit.edu",
-            // "wss://clouddata.scratch.mit.edu",
+            // "wss://clouddata.scratch.mit.edu"
           ]
         : this.options.cloudVariables.cloudHost;
     return `new Scaffolding.Cloud.WebSocketProvider(${JSON.stringify(
