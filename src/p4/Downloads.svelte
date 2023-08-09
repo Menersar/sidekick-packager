@@ -1,9 +1,9 @@
 <script>
-  import Section from './Section.svelte';
-  import {_} from '../locales';
-  import {getJSZip} from '../packager/packager';
-  import downloadURL from './download-url';
-  import {isChromeOS} from './environment';
+  import Section from "./Section.svelte";
+  import { _ } from "../locales";
+  import { getJSZip } from "../packager/packager";
+  import downloadURL from "./download-url";
+  import { isChromeOS } from "./environment";
 
   export let name;
   export let url;
@@ -24,11 +24,11 @@
       const zip = new JSZip();
       zip.file(name, blob);
       const zippedBlob = await zip.generateAsync({
-        type: 'blob',
-        compression: 'DEFLATE'
+        type: "blob",
+        compression: "DEFLATE",
       });
-      const newFileName = name.replace(/\.html$/, '.zip');
-  
+      const newFileName = name.replace(/\.html$/, ".zip");
+
       const blobURL = URL.createObjectURL(zippedBlob);
       downloadURL(newFileName, blobURL);
       URL.revokeObjectURL(blobURL);
@@ -40,30 +40,30 @@
   };
 </script>
 
-<style>
-  .alternative {
-    font-size: smaller;
-  }
-</style>
-
 <Section center>
   <div>
     <p>
       <a href={url} download={name}>
-        {$_('downloads.link')
-          .replace('{size}', `${(blob.size / 1000 / 1000).toFixed(2)}MB`)
-          .replace('{filename}', name)}
+        {$_("downloads.link")
+          .replace("{size}", `${(blob.size / 1000 / 1000).toFixed(2)}MB`)
+          .replace("{filename}", name)}
       </a>
     </p>
-    {#if isChromeOS && name.endsWith('.html')}
+    {#if isChromeOS && name.endsWith(".html")}
       <p class="alternative">
         <button
           on:click={useAlternativeDownloadToBypassChromeOSBugs}
           disabled={workaroundInProgress}
         >
-          {$_('downloads.useWorkaround')}
+          {$_("downloads.useWorkaround")}
         </button>
       </p>
     {/if}
   </div>
 </Section>
+
+<style>
+  .alternative {
+    font-size: smaller;
+  }
+</style>
