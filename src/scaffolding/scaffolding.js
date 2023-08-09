@@ -274,7 +274,7 @@ class Scaffolding extends EventTarget {
     const projectAreaHeight = Math.max(1, totalHeight - offsetFromTop - offsetFromBottom);
 
     if (this.resizeMode === 'dynamic-resize') {
-      // setStageSize is a TurboWarp-specific method
+      // 'setStageSize' is a Sidekick-specific method.
       if (this.vm.setStageSize) {
         this.width = projectAreaWidth;
         this.height = projectAreaHeight;
@@ -322,7 +322,7 @@ class Scaffolding extends EventTarget {
     this.vm.on('PROJECT_RUN_START', () => this.dispatchEvent(new Event('PROJECT_RUN_START')));
     this.vm.on('PROJECT_RUN_STOP', () => this.dispatchEvent(new Event('PROJECT_RUN_STOP')));
 
-    // TurboWarp-specific VM extensions
+    // Sidekick-specific VM extensions.
     if (this.usePackagedRuntime && this.vm.convertToPackagedRuntime) {
       this.vm.convertToPackagedRuntime();
     }

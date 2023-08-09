@@ -15,8 +15,8 @@
 const externalFile = (name) => [
   // Hopefully one of these URLs will not be blocked.
   // !!! CHANGE !!!
-  // `https://packagerdata.turbowarp.org/${name}`,
-  // `https://blobs.turbowarp.xyz/${name}`,
+//   `https://packagerdata.turbowarp.org/${name}`,
+//   `https://blobs.turbowarp.xyz/${name}`,
   // `https://mixality.github.io/Sidekick/packagerdata/${name}`,
   // `https://mixality.github.io/Sidekick/blobs/${name}`,
   `https://menersar.github.io/Sidekick/packagerdata/${name}`,

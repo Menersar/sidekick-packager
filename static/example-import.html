@@ -28,11 +28,18 @@
 
         const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+
+        // !!!!!HERE!!!!!
+        // Expected Origin eventuell zu iwas mit scratch, damit da kein fehler undso aufkommt?
+
+
         //   !!! CHANGE !!!
         // !!!!
         // !!! 'In production'? ???
         // In production, the expected origin is 'https://packager.turbowarp.org'
         //   const expectedOrigin = location.origin;
+        // const expectedOrigin = `https://packager.turbowarp.org`;
+        // const expectedOrigin = `https://mixality.github.io/Sidekick/packager`;
         const expectedOrigin = `https://menersar.github.io/Sidekick/packager`;
 
         window.addEventListener('message', async (e) => {

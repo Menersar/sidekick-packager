@@ -772,6 +772,7 @@ app.whenReady().then(() => {
           zip,
           `${contentsPrefix}Frameworks/${name}.app/Contents/Info.plist`,
           {
+            // !!! ???
             // In the prebuilt Electron binaries on GitHub, the original app has a CFBundleIdentifier of
             // com.github.Electron and all the helpers have com.github.Electron.helper
             [CFBundleIdentifier]: `${plist[CFBundleIdentifier]}.helper`,
@@ -888,14 +889,16 @@ cd "$(dirname "$0")"
     // !!! CHANGE !!!
     const cloudHost =
       this.options.cloudVariables.cloudHost ===
-      // "wss://clouddata.turbowarp.org"
+    //   "wss://clouddata.turbowarp.org"
       "wss://clouddata.scratch.mit.edu"
-        // ? ["wss://clouddata.turbowarp.org", "wss://clouddata.turbowarp.xyz"]
         ? [
             // !!! CHANGE !!!
             // !!!!!HERE!!!!!
             "wss://clouddata.scratch.mit.edu",
             // "wss://clouddata.scratch.mit.edu"
+
+            // "wss://clouddata.turbowarp.org", 
+            // "wss://clouddata.turbowarp.xyz"
           ]
         : this.options.cloudVariables.cloudHost;
     return `new Scaffolding.Cloud.WebSocketProvider(${JSON.stringify(

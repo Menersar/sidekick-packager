@@ -671,6 +671,7 @@
       </label>
       <!-- !!! CHANGE !!! -->
       <!-- href="https://experiments.turbowarp.org/pointerlock/" -->
+      <!-- <a href="https://experiments.turbowarp.org/pointerlock/" target="_blank" rel="noopener noreferrer"> -->
       <!-- <a href="https://mixality.github.io/Sidekick/experiments/pointerlock/" target="_blank" rel="noopener noreferrer"> -->
       <a
         href="https://menersar.github.io/Sidekick/experiments/pointerlock/"
@@ -687,6 +688,7 @@
         {$_("options.gamepad")}
       </label>
       <!-- href="https://turbowarp.org/addons#gamepad" -->
+      <!-- <a href="https://turbowarp.org/addons#gamepad" target="_blank" rel="noopener noreferrer"> -->
       <!-- <a href="https://mixality.github.io/Sidekick/addons#gamepad" target="_blank" rel="noopener noreferrer"> -->
       <a
         href="https://menersar.github.io/Sidekick/addons#gamepad"

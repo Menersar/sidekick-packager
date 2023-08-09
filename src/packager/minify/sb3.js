@@ -32,6 +32,7 @@ class Pool {
   }
   generateNewIds() {
     const entries = Array.from(this.references.entries());
+    // !!! ???
     // The most used original IDs should get the shortest new IDs.
     entries.sort((a, b) => b[1] - a[1]);
 
