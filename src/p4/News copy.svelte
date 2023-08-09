@@ -1,10 +1,18 @@
 <script>
-    import Section from './Section.svelte';
-    const color = '#b117f8';
-  </script>
-  
-  <style>
-    /*
+  import Section from "./Section.svelte";
+  const color = "#b117f8";
+</script>
+
+<!--
+  <Section accent={color}>
+    <div lang="en">
+      <p><span class="badge">New!</span></p>
+    </div>
+  </Section>
+  -->
+
+<style>
+  /*
     .badge {
       background-color: #b117f8;
       border-bottom: 2px solid #6f0073;
@@ -16,13 +24,4 @@
       margin: 0;
     }
     */
-  </style>
-  
-  <!--
-  <Section accent={color}>
-    <div lang="en">
-      <p><span class="badge">New!</span></p>
-    </div>
-  </Section>
-  -->
-  
+</style>

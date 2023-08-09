@@ -1,16 +1,16 @@
 <script>
-  import {_} from '../locales/';
-  import {fade} from 'svelte/transition';
-  import ComplexMessage from './ComplexMessage.svelte';
-  import Section from './Section.svelte';
-  import SelectProject from './SelectProject.svelte';
-  import SelectLocale from './SelectLocale.svelte';
-  import SelectTheme from './SelectTheme.svelte';
-  import Progress from './Progress.svelte';
-  import Modals from './Modals.svelte';
-  import News from './News.svelte';
-  import {progress, theme, error} from './stores';
-  import {isSupported, isSafari, isStandalone, version} from './environment';
+  import { _ } from "../locales/";
+  import { fade } from "svelte/transition";
+  import ComplexMessage from "./ComplexMessage.svelte";
+  import Section from "./Section.svelte";
+  import SelectProject from "./SelectProject.svelte";
+  import SelectLocale from "./SelectLocale.svelte";
+  import SelectTheme from "./SelectTheme.svelte";
+  import Progress from "./Progress.svelte";
+  import Modals from "./Modals.svelte";
+  import News from "./News.svelte";
+  import { progress, theme, error } from "./stores";
+  import { isSupported, isSafari, isStandalone, version } from "./environment";
   import {
     APP_NAME,
     FEEDBACK_PRIMARY,
@@ -19,36 +19,168 @@
     SOURCE_CODE,
     WEBSITE,
     DONATE,
-    PRIVACY_POLICY
-  } from '../packager/brand';
+    PRIVACY_POLICY,
+  } from "../packager/brand";
 
   let projectData;
 
-  const darkMedia = window.matchMedia('(prefers-color-scheme: dark)');
-  let systemTheme = darkMedia.matches ? 'dark' : 'light';
+  const darkMedia = window.matchMedia("(prefers-color-scheme: dark)");
+  let systemTheme = darkMedia.matches ? "dark" : "light";
   if (darkMedia.addEventListener) {
-    darkMedia.addEventListener('change', () => {
-      systemTheme = darkMedia.matches ? 'dark' : 'light';
+    darkMedia.addEventListener("change", () => {
+      systemTheme = darkMedia.matches ? "dark" : "light";
     });
   }
-  $: document.documentElement.setAttribute('theme', $theme === 'system' ? systemTheme : $theme);
+  $: document.documentElement.setAttribute(
+    "theme",
+    $theme === "system" ? systemTheme : $theme
+  );
 
   let modalVisible = false;
 
   const defaultTitle = document.title;
-  let title = '';
-  $: document.title = projectData && title ? `${title} - ${APP_NAME}` : defaultTitle;
+  let title = "";
+  $: document.title =
+    projectData && title ? `${title} - ${APP_NAME}` : defaultTitle;
 
-  const getPackagerOptionsComponent = () => import(
-    /* webpackChunkName: "packager-options-ui" */
-    './PackagerOptions.svelte'
-  ).catch((err) => {
-    $error = err;
-  });
+  const getPackagerOptionsComponent = () =>
+    import(
+      /* webpackChunkName: "packager-options-ui" */
+      "./PackagerOptions.svelte"
+    ).catch((err) => {
+      $error = err;
+    });
 
   // We know for sure we will need this component very soon, so start loading it immediately.
   getPackagerOptionsComponent();
 </script>
+
+<Modals bind:modalVisible />
+
+<main aria-hidden={modalVisible} class:is-not-safari={!isSafari}>
+  <Section accent={ACCENT_COLOR}>
+    <div>
+      <h1>{APP_NAME}</h1>
+      {#if version}
+        <p class="version">
+          {version}
+          {#if isStandalone}
+            - <a href={WEBSITE}>{WEBSITE}</a>
+          {/if}
+        </p>
+      {/if}
+      <p>{$_("p4.description1")}</p>
+      <p>
+        <ComplexMessage
+          message={$_("p4.description2")}
+          values={{
+            embedding: {
+              text: $_("p4.description2-embedding"),
+              // !!! CHANGE !!!
+              // href: "https://docs.turbowarp.org/embedding",
+              // href: 'https://github.com/Mixality/Sidekick#embedding'
+              href: "https://github.com/Menersar/Sidekick#embedding",
+            },
+          }}
+        />
+      </p>
+      <p>
+        <ComplexMessage
+          message={$_("p4.description3")}
+          values={{
+            // These placeholders are named this way for legacy reasons.
+            onScratch: {
+              text: $_("p4.description3-on").replace(
+                "{brand}",
+                FEEDBACK_PRIMARY.name
+              ),
+              href: FEEDBACK_PRIMARY.link,
+            },
+            onGitHub: {
+              text: $_("p4.description3-on").replace(
+                "{brand}",
+                FEEDBACK_SECONDARY.name
+              ),
+              href: FEEDBACK_SECONDARY.link,
+            },
+          }}
+        />
+      </p>
+      <p class="disclaimer">
+        {$_("p4.disclaimer")}
+      </p>
+    </div>
+  </Section>
+
+  {#if !isStandalone}
+    <News />
+  {/if}
+
+  {#if isSupported}
+    <SelectProject bind:projectData />
+  {:else}
+    <Section accent="#4C97FF">
+      <h2>{$_("p4.browserNotSupported")}</h2>
+      <p>{$_("p4.browserNotSupportedDescription")}</p>
+    </Section>
+  {/if}
+
+  {#if projectData}
+    {#await getPackagerOptionsComponent()}
+      <Section center>
+        <Progress text={$_("p4.importingInterface")} />
+      </Section>
+    {:then { default: PackagerOptions }}
+      <div in:fade>
+        <PackagerOptions {projectData} bind:title />
+      </div>
+    {:catch}
+      <Section center>
+        <p>
+          {$_("p4.unknownImportError")}
+        </p>
+      </Section>
+    {/await}
+  {/if}
+
+  {#if $progress.visible}
+    <Section center>
+      <Progress progress={$progress.progress} text={$progress.text} />
+    </Section>
+  {/if}
+
+  <footer>
+    <div>
+      {#if PRIVACY_POLICY && !isStandalone}
+        <a href={PRIVACY_POLICY}>{$_("p4.privacy")}</a>
+        <span> - </span>
+      {/if}
+      <a href={FEEDBACK_PRIMARY.link}>{$_("p4.feedback")}</a>
+      {#if SOURCE_CODE}
+        <span> - </span>
+        <a href={SOURCE_CODE}>{$_("p4.sourceCode")}</a>
+      {/if}
+      {#if DONATE}
+        <span> - </span>
+        <a href={DONATE}>{$_("p4.donate")}</a>
+      {/if}
+    </div>
+    <div>
+      <!-- !!! CHANGE !!! -->
+      <!-- <a href="https://docs.turbowarp.org/packager">{$_("p4.documentation")}</a> -->
+      <!-- <a href="https://github.com/Mixality/Sidekick#packager">{$_('p4.documentation')}</a> -->
+      <a href="https://github.com/Menersar/Sidekick#packager"
+        >{$_("p4.documentation")}</a
+      >
+    </div>
+    <div>
+      <SelectTheme />
+    </div>
+    <div>
+      <SelectLocale />
+    </div>
+  </footer>
+</main>
 
 <style>
   :root {
@@ -96,7 +228,10 @@
   :global([theme="dark"] .is-not-safari select:hover) {
     border-color: #bbb;
   }
-  :global(p), :global(h1), :global(h2), :global(h3) {
+  :global(p),
+  :global(h1),
+  :global(h2),
+  :global(h3) {
     margin: 12px 0;
   }
   :global(summary) {
@@ -125,119 +260,3 @@
     color: inherit;
   }
 </style>
-
-<Modals bind:modalVisible={modalVisible} />
-
-<main aria-hidden={modalVisible} class:is-not-safari={!isSafari}>
-  <Section accent={ACCENT_COLOR}>
-    <div>
-      <h1>{APP_NAME}</h1>
-      {#if version}
-        <p class="version">
-          {version}
-          {#if isStandalone}
-            - <a href={WEBSITE}>{WEBSITE}</a>
-          {/if}
-        </p>
-      {/if}
-      <p>{$_('p4.description1')}</p>
-      <p>
-        <ComplexMessage
-          message={$_('p4.description2')}
-          values={{
-            embedding: {
-              text: $_('p4.description2-embedding'),
-              href: 'https://docs.turbowarp.org/embedding'
-            }
-          }}
-        />
-      </p>
-      <p>
-        <ComplexMessage
-          message={$_('p4.description3')}
-          values={{
-            // These placeholders are named this way for legacy reasons.
-            onScratch: {
-              text: $_('p4.description3-on').replace('{brand}', FEEDBACK_PRIMARY.name),
-              href: FEEDBACK_PRIMARY.link
-            },
-            onGitHub: {
-              text: $_('p4.description3-on').replace('{brand}', FEEDBACK_SECONDARY.name),
-              href: FEEDBACK_SECONDARY.link
-            }
-          }}
-        />
-      </p>
-      <p class="disclaimer">
-        {$_('p4.disclaimer')}
-      </p>
-    </div>
-  </Section>
-
-  {#if !isStandalone}
-    <News />
-  {/if}
-
-  {#if isSupported}
-    <SelectProject bind:projectData />
-  {:else}
-    <Section accent="#4C97FF">
-      <h2>{$_('p4.browserNotSupported')}</h2>
-      <p>{$_('p4.browserNotSupportedDescription')}</p>
-    </Section>
-  {/if}
-
-  {#if projectData}
-    {#await getPackagerOptionsComponent()}
-      <Section center>
-        <Progress text={$_('p4.importingInterface')} />
-      </Section>
-    {:then { default: PackagerOptions }}
-      <div in:fade>
-        <PackagerOptions
-          projectData={projectData}
-          bind:title={title}
-        />
-      </div>
-    {:catch}
-      <Section center>
-        <p>
-          {$_('p4.unknownImportError')}
-        </p>
-      </Section>
-    {/await}
-  {/if}
-
-  {#if $progress.visible}
-    <Section center>
-      <Progress progress={$progress.progress} text={$progress.text} />
-    </Section>
-  {/if}
-
-  <footer>
-    <div>
-      {#if PRIVACY_POLICY && !isStandalone}
-        <a href={PRIVACY_POLICY}>{$_('p4.privacy')}</a>
-        <span> - </span>
-      {/if}
-      <a href={FEEDBACK_PRIMARY.link}>{$_('p4.feedback')}</a>
-      {#if SOURCE_CODE}
-        <span> - </span>
-        <a href={SOURCE_CODE}>{$_('p4.sourceCode')}</a>
-      {/if}
-      {#if DONATE}
-        <span> - </span>
-        <a href={DONATE}>{$_('p4.donate')}</a>
-      {/if}
-    </div>
-    <div>
-      <a href="https://docs.turbowarp.org/packager">{$_('p4.documentation')}</a>
-    </div>
-    <div>
-      <SelectTheme />
-    </div>
-    <div>
-      <SelectLocale />
-    </div>
-  </footer>
-</main>

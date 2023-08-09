@@ -27,11 +27,11 @@ If this is set to an empty string, the link is removed.
 */
 
 module.exports = {
-    APP_NAME: "Sidekick Packager",
-    // !!! CHANGE !!!
-    //   WEBSITE: 'https://mixality.github.io/Sidekick/packager/',
-    WEBSITE: "https://menersar.github.io/Sidekick/packager/",
-    COPYRIGHT_NOTICE: `Copyright (C) 2021-2022 Thomas Weber
+  APP_NAME: "Sidekick Packager",
+  // !!! CHANGE !!!
+  //   WEBSITE: 'https://mixality.github.io/Sidekick/packager/',
+  WEBSITE: "https://menersar.github.io/Sidekick/packager/",
+  COPYRIGHT_NOTICE: `Copyright (C) 2021-2022 Thomas Weber
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -44,20 +44,22 @@ module.exports = {
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.`,
-    ACCENT_COLOR: "#62ad44",
+  ACCENT_COLOR: "#62ad44",
+  // !!! CHANGE !!!
+  //   SOURCE_CODE: 'https://github.com/Mixality/sidekick-packager',
+  SOURCE_CODE: "https://github.com/Menersar/sidekick-packager",
+  FEEDBACK_PRIMARY: {
+    name: "Scratch",
+    link: "https://scratch.mit.edu/users/GarboMuffin/#comments",
+  },
+  FEEDBACK_SECONDARY: {
+    name: "GitHub",
     // !!! CHANGE !!!
-    //   SOURCE_CODE: 'https://github.com/Mixality/packager',
-    SOURCE_CODE: "https://github.com/Menersar/sidekick-packager",
-    FEEDBACK_PRIMARY: {
-      name: "Scratch",
-      link: "https://scratch.mit.edu/users/GarboMuffin/#comments",
-    },
-    FEEDBACK_SECONDARY: {
-      name: "GitHub",
-      // !!! CHANGE !!!
-      // link: 'https://github.com/Mixality/packager/issues'
-      link: "https://github.com/Menersar/sidekick-packager/issues",
-    },
-    DONATE: "https://github.com/sponsors/GarboMuffin",
-  };
-  
+    // link: 'https://github.com/Mixality/sidekick-packager/issues'
+    link: "https://github.com/Menersar/sidekick-packager/issues",
+  },
+  DONATE: "https://github.com/sponsors/GarboMuffin",
+  // !!! CHANGE !!!
+  // PRIVACY_POLICY: "https://mixality.github.io/Sidekick/privacy.html",
+  PRIVACY_POLICY: "https://menersar.github.io/Sidekick/privacy.html",
+};

@@ -113,6 +113,8 @@
             values={{
               link: {
                 // !!! CHANGE !!!
+                // text: "https://docs.turbowarp.org/unshared-projects",
+                // href: "https://docs.turbowarp.org/unshared-projects",
                 // text: 'https://github.com/Mixality/Sidekick#unshared-projects',
                 text: "https://github.com/Menersar/Sidekick#unshared-projects",
                 // !!! CHANGE !!!

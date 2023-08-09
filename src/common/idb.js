@@ -19,7 +19,7 @@ const idbReady = () => {
 const allDatabases = [];
 
 class Database {
-  constructor (name, version, storeName) {
+  constructor(name, version, storeName) {
     this.name = name;
     this.version = version;
     this.storeName = storeName;
@@ -28,34 +28,37 @@ class Database {
     allDatabases.push(this);
   }
 
-  open () {
+  open() {
     if (this.db) {
       return this.db;
     }
     if (this.dbPromise) {
       return this.dbPromise;
     }
-    if (typeof indexedDB === 'undefined') {
-      throw new Error('indexedDB is not supported');
+    if (typeof indexedDB === "undefined") {
+      throw new Error("indexedDB is not supported");
     }
 
     this.dbPromise = idbReady()
-      .then(() => new Promise((resolve, reject) => {
-        const request = indexedDB.open(this.name, this.version);
-        request.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          db.createObjectStore(this.storeName, {
-            keyPath: 'id'
-          });
-        };
-        request.onsuccess = (e) => {
-          const db = e.target.result;
-          resolve(db);
-        };
-        request.onerror = (e) => {
-          reject(new Error(`IDB Error ${e.target.error}`));
-        };
-      }))
+      .then(
+        () =>
+          new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.name, this.version);
+            request.onupgradeneeded = (e) => {
+              const db = e.target.result;
+              db.createObjectStore(this.storeName, {
+                keyPath: "id",
+              });
+            };
+            request.onsuccess = (e) => {
+              const db = e.target.result;
+              resolve(db);
+            };
+            request.onerror = (e) => {
+              reject(new Error(`IDB Error ${e.target.error}`));
+            };
+          })
+      )
       .then((db) => {
         this.dbPromise = null;
         this.db = db;
@@ -69,7 +72,7 @@ class Database {
     return this.dbPromise;
   }
 
-  close () {
+  close() {
     if (this.db) {
       this.db.close();
       this.db = null;
@@ -82,19 +85,19 @@ class Database {
     }
   }
 
-  async createTransaction (readwrite) {
+  async createTransaction(readwrite) {
     const db = await this.open();
     const transaction = db.transaction(this.storeName, readwrite);
     const store = transaction.objectStore(this.storeName);
     return {
       db,
       transaction,
-      store
+      store,
     };
   }
 
-  async deleteEverything () {
-    const {transaction, store} = await this.createTransaction('readwrite');
+  async deleteEverything() {
+    const { transaction, store } = await this.createTransaction("readwrite");
     return new Promise((resolve, reject) => {
       Database.setTransactionErrorHandler(transaction, reject);
       const request = store.clear();
@@ -107,7 +110,7 @@ class Database {
 
 Database.setTransactionErrorHandler = (transaction, reject) => {
   transaction.onerror = () => {
-    reject(new Error(`Transaction error: ${transaction.error}`))
+    reject(new Error(`Transaction error: ${transaction.error}`));
   };
 };
 
@@ -117,6 +120,6 @@ const closeAllDatabases = () => {
   }
 };
 // Closing databases makes us more likely to be put in the browser's back/forward cache
-window.addEventListener('pagehide', closeAllDatabases);
+window.addEventListener("pagehide", closeAllDatabases);
 
 export default Database;

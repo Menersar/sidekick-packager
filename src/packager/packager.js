@@ -1,16 +1,16 @@
-import {EventTarget, CustomEvent} from '../common/event-target';
-import sha256 from './sha256';
-import escapeXML from '../common/escape-xml';
-import largeAssets from './large-assets';
-import request from '../common/request';
-import pngToAppleICNS from './icns';
-import {buildId, verifyBuildId} from './build-id';
-import {encode, decode} from './base85';
-import {parsePlist, generatePlist} from './plist';
-import {APP_NAME, WEBSITE, COPYRIGHT_NOTICE, ACCENT_COLOR} from './brand';
-import {OutdatedPackagerError} from '../common/errors';
-import {darken} from './colors';
-import {Adapter} from './adapter';
+import { EventTarget, CustomEvent } from "../common/event-target";
+import sha256 from "./sha256";
+import escapeXML from "../common/escape-xml";
+import largeAssets from "./large-assets";
+import request from "../common/request";
+import pngToAppleICNS from "./icns";
+import { buildId, verifyBuildId } from "./build-id";
+import { encode, decode } from "./base85";
+import { parsePlist, generatePlist } from "./plist";
+import { APP_NAME, WEBSITE, COPYRIGHT_NOTICE, ACCENT_COLOR } from "./brand";
+import { OutdatedPackagerError } from "../common/errors";
+import { darken } from "./colors";
+import { Adapter } from "./adapter";
 
 const PROGRESS_LOADED_SCRIPTS = 0.1;
 
@@ -22,15 +22,19 @@ const PROGRESS_EXTRACTED_COMPRESSED = 0.98;
 const PROGRESS_FETCHED_PROJECT_JSON = 0.2;
 const PROGRESS_FETCHED_ASSETS = 0.98;
 
-const removeUnnecessaryEmptyLines = (string) => string.split('\n')
-  .filter((line, index, array) => {
-    if (index === 0 || index === array.length - 1) return true;
-    if (line.trim().length === 0 && array[index - 1].trim().length === 0) return false;
-    return true;
-  })
-  .join('\n');
+const removeUnnecessaryEmptyLines = (string) =>
+  string
+    .split("\n")
+    .filter((line, index, array) => {
+      if (index === 0 || index === array.length - 1) return true;
+      if (line.trim().length === 0 && array[index - 1].trim().length === 0)
+        return false;
+      return true;
+    })
+    .join("\n");
 
-export const getJSZip = async () => (await import(/* webpackChunkName: "jszip" */ 'jszip')).default;
+export const getJSZip = async () =>
+  (await import(/* webpackChunkName: "jszip" */ "jszip")).default;
 
 const setFileFast = (zip, path, data) => {
   zip.files[path] = data;
@@ -41,12 +45,12 @@ const interpolate = (a, b, t) => a + t * (b - a);
 const SELF_LICENSE = {
   title: APP_NAME,
   homepage: WEBSITE,
-  license: COPYRIGHT_NOTICE
+  license: COPYRIGHT_NOTICE,
 };
 
 const SCRATCH_LICENSE = {
-  title: 'Scratch',
-  homepage: 'https://scratch.mit.edu/',
+  title: "Scratch",
+  homepage: "https://scratch.mit.edu/",
   license: `Copyright (c) 2016, Massachusetts Institute of Technology
 All rights reserved.
 
@@ -58,12 +62,12 @@ Redistribution and use in source and binary forms, with or without modification,
 
 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.`,
 };
 
 const ELECTRON_LICENSE = {
-  title: 'Electron',
-  homepage: 'https://www.electronjs.org/',
+  title: "Electron",
+  homepage: "https://www.electronjs.org/",
   license: `Copyright (c) Electron contributors
 Copyright (c) 2013-2020 GitHub Inc.
 
@@ -84,7 +88,7 @@ MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.`,
 };
 
 const COPYRIGHT_HEADER = `/*!
@@ -98,7 +102,8 @@ ${SCRATCH_LICENSE.license}
 const generateChromiumLicenseHTML = (licenses) => {
   const style = `<style>body { font-family: sans-serif; }</style>`;
   const pretext = `<h2>The following entries were added by the ${APP_NAME}</h2>`;
-  const convertedLicenses = licenses.map((({title, license, homepage}, index) => `
+  const convertedLicenses = licenses.map(
+    ({ title, license, homepage }, index) => `
 <div class="product">
 <span class="title">${escapeXML(title)}</span>
 <span class="homepage"><a href="${escapeXML(homepage)}">homepage</a></span>
@@ -108,17 +113,19 @@ const generateChromiumLicenseHTML = (licenses) => {
 <pre>${escapeXML(license)}</pre>
 </div>
 </div>
-`));
-  return `${style}${pretext}${convertedLicenses.join('\n')}`;
+`
+  );
+  return `${style}${pretext}${convertedLicenses.join("\n")}`;
 };
 
 // Unique identifier for the app. If this changes, things like local cloud variables will be lost.
 // This should be in reverse-DNS format.
 // https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
-const CFBundleIdentifier = 'CFBundleIdentifier';
+const CFBundleIdentifier = "CFBundleIdentifier";
 // Even if you fork the packager, you shouldn't change this string unless you want packaged macOS apps
 // to lose all their data.
-const bundleIdentifierPrefix = 'org.turbowarp.packager.userland.';
+// !!! CHANGE !!!
+const bundleIdentifierPrefix = "org.turbowarp.packager.userland.";
 
 // CFBundleName is displayed in the menu bar.
 // I'm not actually sure where CFBundleDisplayName is displayed.
@@ -126,12 +133,12 @@ const bundleIdentifierPrefix = 'org.turbowarp.packager.userland.';
 // should be used for longer names, but in reality CFBundleName seems to not have a length limit.
 // https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
 // https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundledisplayname
-const CFBundleName = 'CFBundleName';
-const CFBundleDisplayName = 'CFBundleDisplayName';
+const CFBundleName = "CFBundleName";
+const CFBundleDisplayName = "CFBundleDisplayName";
 
 // The name of the executable in the .app/Contents/MacOS folder
 // https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleexecutable
-const CFBundleExecutable = 'CFBundleExecutable';
+const CFBundleExecutable = "CFBundleExecutable";
 
 // macOS's "About" screen will display: "Version {CFBundleShortVersionString} ({CFBundleVersion})"
 // Apple's own apps are inconsistent about what they display here. Some apps set both of these to the same thing
@@ -141,14 +148,16 @@ const CFBundleExecutable = 'CFBundleExecutable';
 // even have to contain numbers and everything seems to work fine.
 // https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleversion
 // https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleshortversionstring
-const CFBundleVersion = 'CFBundleVersion';
-const CFBundleShortVersionString = 'CFBundleShortVersionString';
+const CFBundleVersion = "CFBundleVersion";
+const CFBundleShortVersionString = "CFBundleShortVersionString";
 
 // Describes the category of the app
 // https://developer.apple.com/documentation/bundleresources/information_property_list/lsapplicationcategorytype
-const LSApplicationCategoryType = 'LSApplicationCategoryType';
+const LSApplicationCategoryType = "LSApplicationCategoryType";
 
-const generateMacReadme = (options) => `When you try to double click on the app to run it, you will probably see this warning:
+const generateMacReadme = (
+  options
+) => `When you try to double click on the app to run it, you will probably see this warning:
 "${options.app.packageName} cannot be opened because the developer cannot be verified."
 This is normal. Press cancel.
 
@@ -164,7 +173,7 @@ Feel free to drag the app into your Applications folder.
 `;
 
 class Packager extends EventTarget {
-  constructor () {
+  constructor() {
     super();
     this.project = null;
     this.options = Packager.DEFAULT_OPTIONS();
@@ -172,34 +181,37 @@ class Packager extends EventTarget {
     this.used = false;
   }
 
-  abort () {
+  abort() {
     if (!this.aborted) {
       this.aborted = true;
-      this.dispatchEvent(new Event('abort'));
+      this.dispatchEvent(new Event("abort"));
     }
   }
 
-  ensureNotAborted () {
+  ensureNotAborted() {
     if (this.aborted) {
-      throw new Error('Aborted');
+      throw new Error("Aborted");
     }
   }
 
-  async fetchLargeAsset (name, type) {
+  async fetchLargeAsset(name, type) {
     this.ensureNotAborted();
     const asset = largeAssets[name];
     if (!asset) {
       throw new Error(`Invalid asset: ${name}`);
     }
-    if (typeof __ASSETS__ !== 'undefined' && __ASSETS__[asset.src]) {
+    if (typeof __ASSETS__ !== "undefined" && __ASSETS__[asset.src]) {
       return __ASSETS__[asset.src];
     }
-    const dispatchProgress = (progress) => this.dispatchEvent(new CustomEvent('large-asset-fetch', {
-      detail: {
-        asset: name,
-        progress
-      }
-    }));
+    const dispatchProgress = (progress) =>
+      this.dispatchEvent(
+        new CustomEvent("large-asset-fetch", {
+          detail: {
+            asset: name,
+            progress,
+          },
+        })
+      );
     dispatchProgress(0);
     let result;
     let cameFromCache = false;
@@ -225,16 +237,18 @@ class Packager extends EventTarget {
         progressCallback: (progress) => {
           dispatchProgress(progress);
         },
-        abortTarget: this
+        abortTarget: this,
       });
     }
     if (asset.useBuildId && !verifyBuildId(buildId, result)) {
-      throw new OutdatedPackagerError('Build ID does not match.');
+      throw new OutdatedPackagerError("Build ID does not match.");
     }
     if (asset.sha256) {
       const hash = await sha256(result);
       if (hash !== asset.sha256) {
-        throw new Error(`Hash mismatch for ${name}, found ${hash} but expected ${asset.sha256}`);
+        throw new Error(
+          `Hash mismatch for ${name}, found ${hash} but expected ${asset.sha256}`
+        );
       }
     }
     if (!cameFromCache) {
@@ -248,29 +262,29 @@ class Packager extends EventTarget {
     return result;
   }
 
-  getAddonOptions () {
+  getAddonOptions() {
     return {
       ...this.options.chunks,
       specialCloudBehaviors: this.options.cloudVariables.specialCloudBehaviors,
       unsafeCloudBehaviors: this.options.cloudVariables.unsafeCloudBehaviors,
-      pause: this.options.controls.pause.enabled
+      pause: this.options.controls.pause.enabled,
     };
   }
 
-  async loadResources () {
+  async loadResources() {
     const texts = [COPYRIGHT_HEADER];
     if (this.project.analysis.usesMusic) {
-      texts.push(await this.fetchLargeAsset('scaffolding', 'text'));
+      texts.push(await this.fetchLargeAsset("scaffolding", "text"));
     } else {
-      texts.push(await this.fetchLargeAsset('scaffolding-min', 'text'));
+      texts.push(await this.fetchLargeAsset("scaffolding-min", "text"));
     }
     if (Object.values(this.getAddonOptions()).some((i) => i)) {
-      texts.push(await this.fetchLargeAsset('addons', 'text'));
+      texts.push(await this.fetchLargeAsset("addons", "text"));
     }
-    this.script = texts.join('\n').replace(/<\/script>/g,"</scri'+'pt>");
+    this.script = texts.join("\n").replace(/<\/script>/g, "</scri'+'pt>");
   }
 
-  computeWindowSize () {
+  computeWindowSize() {
     let width = this.options.stageWidth;
     let height = this.options.stageHeight;
     if (
@@ -280,10 +294,10 @@ class Packager extends EventTarget {
     ) {
       height += 48;
     }
-    return {width, height};
+    return { width, height };
   }
 
-  getPlistPropertiesForPrimaryExecutable () {
+  getPlistPropertiesForPrimaryExecutable() {
     return {
       [CFBundleIdentifier]: `${bundleIdentifierPrefix}${this.options.app.packageName}`,
 
@@ -299,24 +313,27 @@ class Packager extends EventTarget {
       [CFBundleShortVersionString]: this.options.app.version,
 
       // Most items generated by the packager are games
-      [LSApplicationCategoryType]: 'public.app-category.games'
+      [LSApplicationCategoryType]: "public.app-category.games",
     };
   }
 
-  async updatePlist (zip, name, newProperties) {
-    const contents = await zip.file(name).async('string');
+  async updatePlist(zip, name, newProperties) {
+    const contents = await zip.file(name).async("string");
     const plist = parsePlist(contents);
     Object.assign(plist, newProperties);
     zip.file(name, generatePlist(plist));
   }
 
-  async addNwJS (projectZip) {
-    const nwjsBuffer = await this.fetchLargeAsset(this.options.target, 'arraybuffer');
+  async addNwJS(projectZip) {
+    const nwjsBuffer = await this.fetchLargeAsset(
+      this.options.target,
+      "arraybuffer"
+    );
     const nwjsZip = await (await getJSZip()).loadAsync(nwjsBuffer);
 
-    const isWindows = this.options.target.startsWith('nwjs-win');
-    const isMac = this.options.target === 'nwjs-mac';
-    const isLinux = this.options.target.startsWith('nwjs-linux');
+    const isWindows = this.options.target.startsWith("nwjs-win");
+    const isMac = this.options.target === "nwjs-mac";
+    const isLinux = this.options.target.startsWith("nwjs-linux");
 
     // NW.js Windows folder structure:
     // * (root)
@@ -341,9 +358,9 @@ class Packager extends EventTarget {
     //       +-- ...
 
     // the first folder, something like "nwjs-v0.49.0-win-64"
-    const nwjsPrefix = Object.keys(nwjsZip.files)[0].split('/')[0];
+    const nwjsPrefix = Object.keys(nwjsZip.files)[0].split("/")[0];
 
-    const zip = new (await getJSZip());
+    const zip = new (await getJSZip())();
 
     const packageName = this.options.app.packageName;
 
@@ -353,9 +370,9 @@ class Packager extends EventTarget {
 
       let newPath = path.replace(nwjsPrefix, packageName);
       if (isWindows) {
-        newPath = newPath.replace('nw.exe', `${packageName}.exe`);
+        newPath = newPath.replace("nw.exe", `${packageName}.exe`);
       } else if (isMac) {
-        newPath = newPath.replace('nwjs.app', `${packageName}.app`);
+        newPath = newPath.replace("nwjs.app", `${packageName}.app`);
       } else if (isLinux) {
         newPath = newPath.replace(/nw$/, packageName);
       }
@@ -363,34 +380,40 @@ class Packager extends EventTarget {
       setFileFast(zip, newPath, file);
     }
 
-    const ICON_NAME = 'icon.png';
+    const ICON_NAME = "icon.png";
     const icon = await Adapter.getAppIcon(this.options.app.icon);
     const manifest = {
       name: packageName,
-      main: 'main.js',
+      main: "main.js",
       version: this.options.app.version,
       window: {
         width: this.computeWindowSize().width,
         height: this.computeWindowSize().height,
-        icon: ICON_NAME
-      }
+        icon: ICON_NAME,
+      },
     };
 
     let dataPrefix;
     if (isWindows) {
       dataPrefix = `${packageName}/`;
     } else if (isMac) {
-      zip.file(`${packageName}/How to run ${packageName}.txt`, generateMacReadme(this.options));
+      zip.file(
+        `${packageName}/How to run ${packageName}.txt`,
+        generateMacReadme(this.options)
+      );
 
       const icnsData = await pngToAppleICNS(icon);
-      zip.file(`${packageName}/${packageName}.app/Contents/Resources/app.icns`, icnsData);
+      zip.file(
+        `${packageName}/${packageName}.app/Contents/Resources/app.icns`,
+        icnsData
+      );
       dataPrefix = `${packageName}/${packageName}.app/Contents/Resources/app.nw/`;
     } else if (isLinux) {
       const startScript = `#!/bin/bash
 cd "$(dirname "$0")"
 ./${packageName}`;
       zip.file(`${packageName}/start.sh`, startScript, {
-        unixPermissions: 0o100755
+        unixPermissions: 0o100755,
       });
       dataPrefix = `${packageName}/`;
     }
@@ -400,32 +423,38 @@ cd "$(dirname "$0")"
       setFileFast(zip, dataPrefix + path, projectZip.files[path]);
     }
     zip.file(dataPrefix + ICON_NAME, icon);
-    zip.file(dataPrefix + 'package.json', JSON.stringify(manifest, null, 4));
-    zip.file(dataPrefix + 'main.js', `
+    zip.file(dataPrefix + "package.json", JSON.stringify(manifest, null, 4));
+    zip.file(
+      dataPrefix + "main.js",
+      `
     const start = () => nw.Window.open('index.html', {
       position: 'center',
       new_instance: true
     });
     nw.App.on('open', start);
-    start();`);
+    start();`
+    );
 
     const creditsHtmlPath = `${packageName}/credits.html`;
-    const creditsHtml = await zip.file(creditsHtmlPath).async('string');
-    zip.file(creditsHtmlPath, creditsHtml + generateChromiumLicenseHTML([
-      SELF_LICENSE,
-      SCRATCH_LICENSE
-    ]));
+    const creditsHtml = await zip.file(creditsHtmlPath).async("string");
+    zip.file(
+      creditsHtmlPath,
+      creditsHtml + generateChromiumLicenseHTML([SELF_LICENSE, SCRATCH_LICENSE])
+    );
 
     return zip;
   }
 
-  async addElectron (projectZip) {
-    const buffer = await this.fetchLargeAsset(this.options.target, 'arraybuffer');
+  async addElectron(projectZip) {
+    const buffer = await this.fetchLargeAsset(
+      this.options.target,
+      "arraybuffer"
+    );
     const electronZip = await (await getJSZip()).loadAsync(buffer);
 
-    const isWindows = this.options.target.includes('win');
-    const isMac = this.options.target.includes('mac');
-    const isLinux = this.options.target.includes('linux');
+    const isWindows = this.options.target.includes("win");
+    const isMac = this.options.target.includes("mac");
+    const isLinux = this.options.target.includes("linux");
 
     // See https://www.electronjs.org/docs/latest/tutorial/application-distribution#manual-distribution
 
@@ -466,7 +495,7 @@ cd "$(dirname "$0")"
     //          +-- index.html and the other project files (we will create this)
     // +-- LICENSES.chromium.html and other license files
 
-    const zip = new (await getJSZip());
+    const zip = new (await getJSZip())();
     const packageName = this.options.app.packageName;
     for (const path of Object.keys(electronZip.files)) {
       const file = electronZip.files[path];
@@ -483,9 +512,9 @@ cd "$(dirname "$0")"
       }
 
       if (isWindows) {
-        newPath = newPath.replace('electron.exe', `${packageName}.exe`);
+        newPath = newPath.replace("electron.exe", `${packageName}.exe`);
       } else if (isMac) {
-        newPath = newPath.replace('Electron.app', `${packageName}.app`);
+        newPath = newPath.replace("Electron.app", `${packageName}.app`);
         newPath = newPath.replace(/Electron$/, packageName);
       } else if (isLinux) {
         newPath = newPath.replace(/electron$/, packageName);
@@ -494,14 +523,20 @@ cd "$(dirname "$0")"
       setFileFast(zip, newPath, file);
     }
 
-    const rootPrefix = isMac ? '' : `${packageName}/`;
+    const rootPrefix = isMac ? "" : `${packageName}/`;
 
-    const creditsHtml = await zip.file(`${rootPrefix}LICENSES.chromium.html`).async('string');
-    zip.file(`${rootPrefix}licenses.html`, creditsHtml + generateChromiumLicenseHTML([
-      SELF_LICENSE,
-      SCRATCH_LICENSE,
-      ELECTRON_LICENSE
-    ]));
+    const creditsHtml = await zip
+      .file(`${rootPrefix}LICENSES.chromium.html`)
+      .async("string");
+    zip.file(
+      `${rootPrefix}licenses.html`,
+      creditsHtml +
+        generateChromiumLicenseHTML([
+          SELF_LICENSE,
+          SCRATCH_LICENSE,
+          ELECTRON_LICENSE,
+        ])
+    );
 
     zip.remove(`${rootPrefix}LICENSE.txt`);
     zip.remove(`${rootPrefix}LICENSES.chromium.html`);
@@ -509,10 +544,14 @@ cd "$(dirname "$0")"
     zip.remove(`${rootPrefix}version`);
     zip.remove(`${rootPrefix}resources/default_app.asar`);
 
-    const contentsPrefix = isMac ? `${rootPrefix}${packageName}.app/Contents/` : rootPrefix;
-    const resourcesPrefix = isMac ? `${contentsPrefix}Resources/app/` : `${contentsPrefix}resources/app/`;
-    const electronMainName = 'electron-main.js';
-    const iconName = 'icon.png';
+    const contentsPrefix = isMac
+      ? `${rootPrefix}${packageName}.app/Contents/`
+      : rootPrefix;
+    const resourcesPrefix = isMac
+      ? `${contentsPrefix}Resources/app/`
+      : `${contentsPrefix}resources/app/`;
+    const electronMainName = "electron-main.js";
+    const iconName = "icon.png";
 
     const icon = await Adapter.getAppIcon(this.options.app.icon);
     zip.file(`${resourcesPrefix}${iconName}`, icon);
@@ -520,9 +559,12 @@ cd "$(dirname "$0")"
     const manifest = {
       name: packageName,
       main: electronMainName,
-      version: this.options.app.version
+      version: this.options.app.version,
     };
-    zip.file(`${resourcesPrefix}package.json`, JSON.stringify(manifest, null, 4));
+    zip.file(
+      `${resourcesPrefix}package.json`,
+      JSON.stringify(manifest, null, 4)
+    );
 
     const mainJS = `'use strict';
 const {app, BrowserWindow, Menu, shell, screen, dialog} = require('electron');
@@ -704,38 +746,48 @@ app.whenReady().then(() => {
 
     if (isWindows) {
       const readme = [
-        '1) Extract the whole zip',
+        "1) Extract the whole zip",
         `2) Open "${packageName}.exe" to start the app.`,
         'Open "licenses.html" for information regarding open source software used by the app.',
-      ].join('\n\n');
+      ].join("\n\n");
       zip.file(`${rootPrefix}README.txt`, readme);
     } else if (isMac) {
-      zip.file(`How to run ${this.options.app.packageName}.txt`, generateMacReadme(this.options));
+      zip.file(
+        `How to run ${this.options.app.packageName}.txt`,
+        generateMacReadme(this.options)
+      );
 
       const plist = this.getPlistPropertiesForPrimaryExecutable();
       await this.updatePlist(zip, `${contentsPrefix}Info.plist`, plist);
 
       // macOS Electron apps also contain several helper apps that we should update.
       const HELPERS = [
-        'Electron Helper',
-        'Electron Helper (GPU)',
-        'Electron Helper (Renderer)',
-        'Electron Helper (Plugin)',
+        "Electron Helper",
+        "Electron Helper (GPU)",
+        "Electron Helper (Renderer)",
+        "Electron Helper (Plugin)",
       ];
       for (const name of HELPERS) {
-        await this.updatePlist(zip, `${contentsPrefix}Frameworks/${name}.app/Contents/Info.plist`, {
-          // In the prebuilt Electron binaries on GitHub, the original app has a CFBundleIdentifier of
-          // com.github.Electron and all the helpers have com.github.Electron.helper
-          [CFBundleIdentifier]: `${plist[CFBundleIdentifier]}.helper`,
+        await this.updatePlist(
+          zip,
+          `${contentsPrefix}Frameworks/${name}.app/Contents/Info.plist`,
+          {
+            // In the prebuilt Electron binaries on GitHub, the original app has a CFBundleIdentifier of
+            // com.github.Electron and all the helpers have com.github.Electron.helper
+            [CFBundleIdentifier]: `${plist[CFBundleIdentifier]}.helper`,
 
-          // We shouldn't change the actual name of the helpers because we don't actually rename their .app
-          // We also don't rename the executable
-          [CFBundleDisplayName]: name.replace('Electron', this.options.app.packageName),
+            // We shouldn't change the actual name of the helpers because we don't actually rename their .app
+            // We also don't rename the executable
+            [CFBundleDisplayName]: name.replace(
+              "Electron",
+              this.options.app.packageName
+            ),
 
-          // electron-builder always updates the helpers to use the same version as the app itself
-          [CFBundleVersion]: this.options.app.version,
-          [CFBundleShortVersionString]: this.options.app.version,
-        });
+            // electron-builder always updates the helpers to use the same version as the app itself
+            [CFBundleVersion]: this.options.app.version,
+            [CFBundleShortVersionString]: this.options.app.version,
+          }
+        );
       }
 
       const icns = await pngToAppleICNS(icon);
@@ -746,15 +798,18 @@ app.whenReady().then(() => {
 cd "$(dirname "$0")"
 ./${packageName}`;
       zip.file(`${rootPrefix}start.sh`, startScript, {
-        unixPermissions: 0o100755
+        unixPermissions: 0o100755,
       });
     }
 
     return zip;
   }
 
-  async addWebViewMac (projectZip) {
-    const buffer = await this.fetchLargeAsset(this.options.target, 'arraybuffer');
+  async addWebViewMac(projectZip) {
+    const buffer = await this.fetchLargeAsset(
+      this.options.target,
+      "arraybuffer"
+    );
     const appZip = await (await getJSZip()).loadAsync(buffer);
 
     // +-- WebView.app
@@ -771,11 +826,11 @@ cd "$(dirname "$0")"
     const contentsPrefix = `${newAppName}/Contents/`;
     const resourcesPrefix = `${newAppName}/Contents/Resources/`;
 
-    const zip = new (await getJSZip());
+    const zip = new (await getJSZip())();
     for (const [path, data] of Object.entries(appZip.files)) {
       const newPath = path
         // Rename the .app itself
-        .replace('WebView.app', newAppName)
+        .replace("WebView.app", newAppName)
         // Rename the executable
         .replace(/WebView$/, this.options.app.packageName);
       setFileFast(zip, newPath, data);
@@ -789,76 +844,106 @@ cd "$(dirname "$0")"
     zip.file(`${resourcesPrefix}AppIcon.icns`, icns);
     zip.remove(`${resourcesPrefix}Assets.car`);
 
-    const parsedBackgroundColor = parseInt(this.options.appearance.background.substr(1), 16);
+    const parsedBackgroundColor = parseInt(
+      this.options.appearance.background.substr(1),
+      16
+    );
     const applicationConfig = {
       title: this.options.app.windowTitle,
       background: [
         // R, G, B [0-255]
-        parsedBackgroundColor >> 16 & 0xff,
-        parsedBackgroundColor >> 8 & 0xff,
+        (parsedBackgroundColor >> 16) & 0xff,
+        (parsedBackgroundColor >> 8) & 0xff,
         parsedBackgroundColor & 0xff,
         // A [0-1]
-        1
+        1,
       ],
       width: this.computeWindowSize().width,
-      height: this.computeWindowSize().height
+      height: this.computeWindowSize().height,
     };
-    zip.file(`${resourcesPrefix}application_config.json`, JSON.stringify(applicationConfig));
+    zip.file(
+      `${resourcesPrefix}application_config.json`,
+      JSON.stringify(applicationConfig)
+    );
 
-    await this.updatePlist(zip, `${contentsPrefix}Info.plist`, this.getPlistPropertiesForPrimaryExecutable());
+    await this.updatePlist(
+      zip,
+      `${contentsPrefix}Info.plist`,
+      this.getPlistPropertiesForPrimaryExecutable()
+    );
 
-    zip.file(`How to run ${this.options.app.packageName}.txt`, generateMacReadme(this.options));
+    zip.file(
+      `How to run ${this.options.app.packageName}.txt`,
+      generateMacReadme(this.options)
+    );
 
     return zip;
   }
 
-  makeWebSocketProvider () {
+  makeWebSocketProvider() {
     // If using the default turbowarp.org server, we'll add a fallback for the turbowarp.xyz alias.
     // This helps work around web filters as turbowarp.org can be blocked for games and turbowarp.xyz uses
     // a problematic TLD. These are the same server and same variables, just different domain.
-    const cloudHost = this.options.cloudVariables.cloudHost === 'wss://clouddata.turbowarp.org' ? [
-      'wss://clouddata.turbowarp.org',
-      'wss://clouddata.turbowarp.xyz'
-    ] : this.options.cloudVariables.cloudHost;
-    return `new Scaffolding.Cloud.WebSocketProvider(${JSON.stringify(cloudHost)}, ${JSON.stringify(this.options.projectId)})`;
+
+    // !!! CHANGE !!!
+    const cloudHost =
+      this.options.cloudVariables.cloudHost ===
+      // "wss://clouddata.turbowarp.org"
+      "wss://clouddata.scratch.mit.edu"
+        // ? ["wss://clouddata.turbowarp.org", "wss://clouddata.turbowarp.xyz"]
+        ? [
+            // !!! CHANGE !!!
+            // !!!!!HERE!!!!!
+            "wss://clouddata.scratch.mit.edu",
+            // "wss://clouddata.scratch.mit.edu",
+          ]
+        : this.options.cloudVariables.cloudHost;
+    return `new Scaffolding.Cloud.WebSocketProvider(${JSON.stringify(
+      cloudHost
+    )}, ${JSON.stringify(this.options.projectId)})`;
   }
 
-  makeLocalStorageProvider () {
-    return `new Scaffolding.Cloud.LocalStorageProvider(${JSON.stringify(`cloudvariables:${this.options.projectId}`)})`;
+  makeLocalStorageProvider() {
+    return `new Scaffolding.Cloud.LocalStorageProvider(${JSON.stringify(
+      `cloudvariables:${this.options.projectId}`
+    )})`;
   }
 
-  makeCustomProvider () {
+  makeCustomProvider() {
     const variables = this.options.cloudVariables.custom;
-    let result = '{const providers = {};\n';
+    let result = "{const providers = {};\n";
     for (const provider of new Set(Object.values(variables))) {
-      if (provider === 'ws') {
+      if (provider === "ws") {
         result += `providers.ws = ${this.makeWebSocketProvider()};\n`;
-      } else if (provider === 'local') {
+      } else if (provider === "local") {
         result += `providers.local = ${this.makeLocalStorageProvider()};\n`;
       }
     }
-    result += 'for (const provider of Object.values(providers)) scaffolding.addCloudProvider(provider);\n';
+    result +=
+      "for (const provider of Object.values(providers)) scaffolding.addCloudProvider(provider);\n";
     for (const variableName of Object.keys(variables)) {
       const providerToUse = variables[variableName];
-      result += `scaffolding.addCloudProviderOverride(${JSON.stringify(variableName)}, providers[${JSON.stringify(providerToUse)}] || null);\n`;
+      result += `scaffolding.addCloudProviderOverride(${JSON.stringify(
+        variableName
+      )}, providers[${JSON.stringify(providerToUse)}] || null);\n`;
     }
-    result += '}';
+    result += "}";
     return result;
   }
 
-  generateFilename (extension) {
+  generateFilename(extension) {
     return `${this.options.app.windowTitle}.${extension}`;
   }
 
-  async generateGetProjectData () {
-    let result = '';
-    let getProjectDataFunction = '';
+  async generateGetProjectData() {
+    let result = "";
+    let getProjectDataFunction = "";
     let isZip = false;
     let storageProgressStart;
     let storageProgressEnd;
 
-    if (this.options.target === 'html') {
-      isZip = this.project.type !== 'blob';
+    if (this.options.target === "html") {
+      isZip = this.project.type !== "blob";
       storageProgressStart = PROGRESS_FETCHED_COMPRESSED;
       storageProgressEnd = PROGRESS_EXTRACTED_COMPRESSED;
 
@@ -867,7 +952,11 @@ cd "$(dirname "$0")"
       const encoded = encode(this.project.arrayBuffer);
       for (let i = 0; i < encoded.length; i += SEGMENT_LENGTH) {
         const segment = encoded.substr(i, SEGMENT_LENGTH);
-        const progress = interpolate(PROGRESS_LOADED_SCRIPTS, PROGRESS_FETCHED_COMPRESSED, i / encoded.length);
+        const progress = interpolate(
+          PROGRESS_LOADED_SCRIPTS,
+          PROGRESS_FETCHED_COMPRESSED,
+          i / encoded.length
+        );
         // Progress will always be a number between 0 and 1. We can remove the leading 0 and unnecessary decimals to save space.
         const shortenedProgress = progress.toString().substr(1, 4);
         result += `<script type="p4-project">${segment}</script><script>setProgress(${shortenedProgress})</script>`;
@@ -882,13 +971,16 @@ cd "$(dirname "$0")"
       }`;
     } else {
       let src;
-      if (this.project.type === 'blob' || this.options.target === 'zip-one-asset') {
-        isZip = this.project.type !== 'blob';
-        src = './project.zip';
+      if (
+        this.project.type === "blob" ||
+        this.options.target === "zip-one-asset"
+      ) {
+        isZip = this.project.type !== "blob";
+        src = "./project.zip";
         storageProgressStart = PROGRESS_FETCHED_COMPRESSED;
         storageProgressEnd = PROGRESS_EXTRACTED_COMPRESSED;
       } else {
-        src = './assets/project.json';
+        src = "./assets/project.json";
         storageProgressStart = PROGRESS_FETCHED_PROJECT_JSON;
         storageProgressEnd = PROGRESS_FETCHED_ASSETS;
       }
@@ -923,7 +1015,9 @@ cd "$(dirname "$0")"
         storage.onprogress = (total, loaded) => {
           setProgress(interpolate(${storageProgressStart}, ${storageProgressEnd}, loaded / total));
         };
-        ${isZip ? `
+        ${
+          isZip
+            ? `
         let zip;
         // Allow zip to be GC'd after project loads
         vm.runtime.on('PROJECT_LOADED', () => (zip = null));
@@ -950,43 +1044,51 @@ cd "$(dirname "$0")"
             throw new Error('project.json is not in zip');
           }
           return file.async('arraybuffer');
-        });` : `
+        });`
+            : `
         storage.addWebStore(
           [storage.AssetType.ImageVector, storage.AssetType.ImageBitmap, storage.AssetType.Sound],
           (asset) => new URL('./assets/' + asset.assetId + '.' + asset.dataFormat, location).href
         );
-        return ${getProjectDataFunction};`}
+        return ${getProjectDataFunction};`
+        }
       })();
     </script>`;
     return result;
   }
 
-  async generateFavicon () {
+  async generateFavicon() {
     if (this.options.app.icon === null) {
-      return '';
+      return "";
     }
-    const data = await Adapter.readAsURL(this.options.app.icon, 'app icon');
+    const data = await Adapter.readAsURL(this.options.app.icon, "app icon");
     return `<link rel="icon" href="${data}">`;
   }
 
-  async generateCursor () {
-    if (this.options.cursor.type !== 'custom') {
+  async generateCursor() {
+    if (this.options.cursor.type !== "custom") {
       return this.options.cursor.type;
     }
     if (!this.options.cursor.custom) {
       // Configured to use a custom cursor but no image was selected
-      return 'auto';
+      return "auto";
     }
-    const data = await Adapter.readAsURL(this.options.cursor.custom, 'custom cursor');
+    const data = await Adapter.readAsURL(
+      this.options.cursor.custom,
+      "custom cursor"
+    );
     return `url(${data}) ${this.options.cursor.center.x} ${this.options.cursor.center.y}, auto`;
   }
 
-  async generateExtensionURLs () {
-    const dispatchProgress = (progress) => this.dispatchEvent(new CustomEvent('fetch-extensions', {
-      detail: {
-        progress
-      }
-    }));
+  async generateExtensionURLs() {
+    const dispatchProgress = (progress) =>
+      this.dispatchEvent(
+        new CustomEvent("fetch-extensions", {
+          detail: {
+            progress,
+          },
+        })
+      );
 
     const shouldTryToFetch = (url) => {
       if (!this.options.bakeExtensions) {
@@ -994,7 +1096,7 @@ cd "$(dirname "$0")"
       }
       try {
         const parsed = new URL(url);
-        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+        return parsed.protocol === "http:" || parsed.protocol === "https:";
       } catch (e) {
         return false;
       }
@@ -1015,11 +1117,13 @@ cd "$(dirname "$0")"
           // Wrap the extension in an IIFE so that extensions written for the sandbox are less
           // likely to cause issues in an unsandboxed environment due to global pollution or
           // overriding Scratch.*
-          const wrappedSource = `(function(Scratch) { ${source} })(Scratch);`
-          const dataURI = `data:text/javascript;,${encodeURIComponent(wrappedSource)}`;
+          const wrappedSource = `(function(Scratch) { ${source} })(Scratch);`;
+          const dataURI = `data:text/javascript;,${encodeURIComponent(
+            wrappedSource
+          )}`;
           finalURLs.push(dataURI);
         } catch (e) {
-          console.warn('Could not bake extension', url, e);
+          console.warn("Could not bake extension", url, e);
           finalURLs.push(url);
         }
       }
@@ -1029,12 +1133,12 @@ cd "$(dirname "$0")"
     return finalURLs;
   }
 
-  async package () {
+  async package() {
     if (!Adapter) {
-      throw new Error('Missing adapter');
+      throw new Error("Missing adapter");
     }
     if (this.used) {
-      throw new Error('Packager was already used');
+      throw new Error("Packager was already used");
     }
     this.used = true;
     this.ensureNotAborted();
@@ -1107,12 +1211,18 @@ cd "$(dirname "$0")"
       box-sizing: border-box;
     }
     #loading {
-      ${this.options.loadingScreen.image && this.options.loadingScreen.imageMode === 'stretch'
-        ? `background-image: url(${await Adapter.readAsURL(this.options.loadingScreen.image, 'stretched loading screen')});
+      ${
+        this.options.loadingScreen.image &&
+        this.options.loadingScreen.imageMode === "stretch"
+          ? `background-image: url(${await Adapter.readAsURL(
+              this.options.loadingScreen.image,
+              "stretched loading screen"
+            )});
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center;`
-        : ''}
+          : ""
+      }
     }
     .progress-bar-outer {
       border: 1px solid currentColor;
@@ -1207,9 +1317,27 @@ cd "$(dirname "$0")"
 
   <div id="loading" class="screen">
     <noscript>Enable JavaScript</noscript>
-    ${this.options.loadingScreen.text ? `<h1 class="loading-text">${escapeXML(this.options.loadingScreen.text)}</h1>` : ''}
-    ${this.options.loadingScreen.image && this.options.loadingScreen.imageMode === 'normal' ? `<div class="loading-image"><img src="${await Adapter.readAsURL(this.options.loadingScreen.image, 'loading-screen')}"></div>` : ''}
-    ${this.options.loadingScreen.progressBar ? '<div class="progress-bar-outer"><div class="progress-bar-inner" id="loading-inner"></div></div>' : ''}
+    ${
+      this.options.loadingScreen.text
+        ? `<h1 class="loading-text">${escapeXML(
+            this.options.loadingScreen.text
+          )}</h1>`
+        : ""
+    }
+    ${
+      this.options.loadingScreen.image &&
+      this.options.loadingScreen.imageMode === "normal"
+        ? `<div class="loading-image"><img src="${await Adapter.readAsURL(
+            this.options.loadingScreen.image,
+            "loading-screen"
+          )}"></div>`
+        : ""
+    }
+    ${
+      this.options.loadingScreen.progressBar
+        ? '<div class="progress-bar-outer"><div class="progress-bar-inner" id="loading-inner"></div></div>'
+        : ""
+    }
   </div>
 
   <div id="error" class="screen" hidden>
@@ -1220,7 +1348,11 @@ cd "$(dirname "$0")"
     </details>
   </div>
 
-  ${this.options.target === 'html' ? `<script>${this.script}</script>` : '<script src="script.js"></script>'}
+  ${
+    this.options.target === "html"
+      ? `<script>${this.script}</script>`
+      : '<script src="script.js"></script>'
+  }
   <script>${removeUnnecessaryEmptyLines(`
     const appElement = document.getElementById('app');
     const launchScreen = document.getElementById('launch');
@@ -1267,19 +1399,26 @@ cd "$(dirname "$0")"
         videoProvider: vm.runtime.ioDevices.video.provider
       };
 
-      scaffolding.setUsername(${JSON.stringify(this.options.username)}.replace(/#/g, () => Math.floor(Math.random() * 10)));
-      scaffolding.setAccentColor(${JSON.stringify(this.options.appearance.accent)});
+      scaffolding.setUsername(${JSON.stringify(
+        this.options.username
+      )}.replace(/#/g, () => Math.floor(Math.random() * 10)));
+      scaffolding.setAccentColor(${JSON.stringify(
+        this.options.appearance.accent
+      )});
 
-      ${this.options.cloudVariables.mode === 'ws' ?
-        `scaffolding.addCloudProvider(${this.makeWebSocketProvider()})` :
-        this.options.cloudVariables.mode === 'local' ?
-        `scaffolding.addCloudProvider(${this.makeLocalStorageProvider()})` :
-        this.options.cloudVariables.mode === 'custom' ?
-        this.makeCustomProvider() :
-        ''
+      ${
+        this.options.cloudVariables.mode === "ws"
+          ? `scaffolding.addCloudProvider(${this.makeWebSocketProvider()})`
+          : this.options.cloudVariables.mode === "local"
+          ? `scaffolding.addCloudProvider(${this.makeLocalStorageProvider()})`
+          : this.options.cloudVariables.mode === "custom"
+          ? this.makeCustomProvider()
+          : ""
       };
 
-      ${this.options.controls.greenFlag.enabled ? `
+      ${
+        this.options.controls.greenFlag.enabled
+          ? `
       const greenFlagButton = document.createElement('img');
       greenFlagButton.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16.63 17.5"><path d="M.75 2a6.44 6.44 0 017.69 0h0a6.44 6.44 0 007.69 0v10.4a6.44 6.44 0 01-7.69 0h0a6.44 6.44 0 00-7.69 0" fill="#4cbf56" stroke="#45993d" stroke-linecap="round" stroke-linejoin="round"/><path stroke-width="1.5" fill="#4cbf56" stroke="#45993d" stroke-linecap="round" stroke-linejoin="round" d="M.75 16.75v-16"/></svg>');
       greenFlagButton.className = 'control-button';
@@ -1296,9 +1435,13 @@ cd "$(dirname "$0")"
       scaffolding.addControlButton({
         element: greenFlagButton,
         where: 'top-left'
-      });` : ''}
+      });`
+          : ""
+      }
 
-      ${this.options.controls.pause.enabled ? `
+      ${
+        this.options.controls.pause.enabled
+          ? `
       const pauseButton = document.createElement('img');
       pauseButton.className = 'control-button';
       pauseButton.draggable = false;
@@ -1319,9 +1462,13 @@ cd "$(dirname "$0")"
       scaffolding.addControlButton({
         element: pauseButton,
         where: 'top-left'
-      });` : ''}
+      });`
+          : ""
+      }
 
-      ${this.options.controls.stopAll.enabled ? `
+      ${
+        this.options.controls.stopAll.enabled
+          ? `
       const stopAllButton = document.createElement('img');
       stopAllButton.src = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14"><path fill="#ec5959" stroke="#b84848" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M4.3.5h5.4l3.8 3.8v5.4l-3.8 3.8H4.3L.5 9.7V4.3z"/></svg>');
       stopAllButton.className = 'control-button';
@@ -1332,9 +1479,13 @@ cd "$(dirname "$0")"
       scaffolding.addControlButton({
         element: stopAllButton,
         where: 'top-left'
-      });` : ''}
+      });`
+          : ""
+      }
 
-      ${this.options.controls.fullscreen.enabled ? `
+      ${
+        this.options.controls.fullscreen.enabled
+          ? `
       if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
         let isFullScreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
         const fullscreenButton = document.createElement('img');
@@ -1355,8 +1506,13 @@ cd "$(dirname "$0")"
             }
           }
         });
-        const otherControlsExist = ${this.options.controls.greenFlag.enabled || this.options.controls.stopAll.enabled};
-        const fillColor = otherControlsExist ? '#575E75' : '${this.options.appearance.foreground}';
+        const otherControlsExist = ${
+          this.options.controls.greenFlag.enabled ||
+          this.options.controls.stopAll.enabled
+        };
+        const fillColor = otherControlsExist ? '#575E75' : '${
+          this.options.appearance.foreground
+        }';
         const updateFullScreen = () => {
           isFullScreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
           document.body.classList.toggle('is-fullscreen', isFullScreen);
@@ -1379,12 +1535,18 @@ cd "$(dirname "$0")"
           fullscreenButton.className = 'standalone-fullscreen-button';
           document.body.appendChild(fullscreenButton);
         }
-      }` : ''}
+      }`
+          : ""
+      }
 
       vm.setTurboMode(${this.options.turbo});
-      if (vm.setInterpolation) vm.setInterpolation(${this.options.interpolation});
+      if (vm.setInterpolation) vm.setInterpolation(${
+        this.options.interpolation
+      });
       if (vm.setFramerate) vm.setFramerate(${this.options.framerate});
-      if (vm.renderer.setUseHighQualityRender) vm.renderer.setUseHighQualityRender(${this.options.highQualityPen});
+      if (vm.renderer.setUseHighQualityRender) vm.renderer.setUseHighQualityRender(${
+        this.options.highQualityPen
+      });
       if (vm.setRuntimeOptions) vm.setRuntimeOptions({
         fencing: ${this.options.fencing},
         miscLimits: ${this.options.miscLimits},
@@ -1394,10 +1556,14 @@ cd "$(dirname "$0")"
         enabled: ${this.options.compiler.enabled},
         warpTimer: ${this.options.compiler.warpTimer}
       });
-      if (vm.renderer.setMaxTextureDimension) vm.renderer.setMaxTextureDimension(${this.options.maxTextureDimension});
+      if (vm.renderer.setMaxTextureDimension) vm.renderer.setMaxTextureDimension(${
+        this.options.maxTextureDimension
+      });
 
       if (typeof ScaffoldingAddons !== 'undefined') {
-        ScaffoldingAddons.run(scaffolding, ${JSON.stringify(this.getAddonOptions())});
+        ScaffoldingAddons.run(scaffolding, ${JSON.stringify(
+          this.getAddonOptions()
+        )});
       }
 
       scaffolding.setExtensionSecurityManager({
@@ -1407,18 +1573,26 @@ cd "$(dirname "$0")"
           return Promise.resolve(false);
         }
       });
-      for (const extension of ${JSON.stringify(await this.generateExtensionURLs())}) {
+      for (const extension of ${JSON.stringify(
+        await this.generateExtensionURLs()
+      )}) {
         vm.extensionManager.loadExtensionURL(extension);
       }
 
-      ${this.options.closeWhenStopped ? `
+      ${
+        this.options.closeWhenStopped
+          ? `
       vm.runtime.on('PROJECT_RUN_STOP', () => {
         if (!vm.isPaused || !vm.isPaused()) {
           window.close();
         }
-      });` : ''}
+      });`
+          : ""
+      }
 
-      ${this.options.target.startsWith('nwjs-') ? `
+      ${
+        this.options.target.startsWith("nwjs-")
+          ? `
       if (typeof nw !== 'undefined') {
         const win = nw.Window.get();
         win.on('new-win-policy', (frame, url, policy) => {
@@ -1434,18 +1608,24 @@ cd "$(dirname "$0")"
             document.exitFullscreen();
           }
         });
-      }` : ''}
+      }`
+          : ""
+      }
     } catch (e) {
       handleError(e);
     }
   `)}</script>
-  ${this.options.custom.js ? `<script>
+  ${
+    this.options.custom.js
+      ? `<script>
     try {
       ${this.options.custom.js}
     } catch (e) {
       handleError(e);
     }
-  </script>` : ''}
+  </script>`
+      : ""
+  }
   ${await this.generateGetProjectData()}
   <script>
     const run = async () => {
@@ -1471,51 +1651,59 @@ cd "$(dirname "$0")"
 `;
     this.ensureNotAborted();
 
-    if (this.options.target !== 'html') {
+    if (this.options.target !== "html") {
       let zip;
-      if (this.project.type === 'sb3' && this.options.target !== 'zip-one-asset') {
+      if (
+        this.project.type === "sb3" &&
+        this.options.target !== "zip-one-asset"
+      ) {
         zip = await (await getJSZip()).loadAsync(this.project.arrayBuffer);
         for (const file of Object.keys(zip.files)) {
           zip.files[`assets/${file}`] = zip.files[file];
           delete zip.files[file];
         }
       } else {
-        zip = new (await getJSZip());
-        zip.file('project.zip', this.project.arrayBuffer);
+        zip = new (await getJSZip())();
+        zip.file("project.zip", this.project.arrayBuffer);
       }
-      zip.file('index.html', html);
-      zip.file('script.js', this.script);
+      zip.file("index.html", html);
+      zip.file("script.js", this.script);
 
-      if (this.options.target.startsWith('nwjs-')) {
+      if (this.options.target.startsWith("nwjs-")) {
         zip = await this.addNwJS(zip);
-      } else if (this.options.target.startsWith('electron-')) {
+      } else if (this.options.target.startsWith("electron-")) {
         zip = await this.addElectron(zip);
-      } else if (this.options.target === 'webview-mac') {
+      } else if (this.options.target === "webview-mac") {
         zip = await this.addWebViewMac(zip);
       }
 
       this.ensureNotAborted();
       return {
-        data: await zip.generateAsync({
-          type: 'arraybuffer',
-          compression: 'DEFLATE',
-          // Use UNIX permissions so that executable bits are properly set for macOS and Linux
-          platform: 'UNIX'
-        }, (meta) => {
-          this.dispatchEvent(new CustomEvent('zip-progress', {
-            detail: {
-              progress: meta.percent / 100
-            }
-          }));
-        }),
-        type: 'application/zip',
-        filename: this.generateFilename('zip')
+        data: await zip.generateAsync(
+          {
+            type: "arraybuffer",
+            compression: "DEFLATE",
+            // Use UNIX permissions so that executable bits are properly set for macOS and Linux
+            platform: "UNIX",
+          },
+          (meta) => {
+            this.dispatchEvent(
+              new CustomEvent("zip-progress", {
+                detail: {
+                  progress: meta.percent / 100,
+                },
+              })
+            );
+          }
+        ),
+        type: "application/zip",
+        filename: this.generateFilename("zip"),
       };
     }
     return {
       data: html,
-      type: 'text/html',
-      filename: this.generateFilename('html')
+      type: "text/html",
+      filename: this.generateFilename("html"),
     };
   }
 }
@@ -1523,20 +1711,20 @@ cd "$(dirname "$0")"
 Packager.getDefaultPackageNameFromFileName = (title) => {
   // Note: Changing this logic is very dangerous because changing the defaults will cause already packaged projects
   // to loose any data when they are updated.
-  title = title.split('.')[0];
-  title = title.replace(/[^\-a-z ]/gi, '');
+  title = title.split(".")[0];
+  title = title.replace(/[^\-a-z ]/gi, "");
   title = title.trim();
-  title = title.replace(/ /g, '-');
-  return title.toLowerCase() || 'packaged-project';
+  title = title.replace(/ /g, "-");
+  return title.toLowerCase() || "packaged-project";
 };
 
 Packager.getWindowTitleFromFileName = (title) => {
-  const split = title.split('.');
+  const split = title.split(".");
   if (split.length > 1) {
     split.pop();
   }
-  title = split.join('.').trim();
-  return title || 'Packaged Project';
+  title = split.join(".").trim();
+  return title || "Packaged Project";
 };
 
 Packager.usesUnsafeOptions = (options) => {
@@ -1544,9 +1732,12 @@ Packager.usesUnsafeOptions = (options) => {
   const getUnsafeOptions = (options) => [
     options.custom,
     options.extensions,
-    options.cloudVariables.unsafeCloudBehaviors
+    options.cloudVariables.unsafeCloudBehaviors,
   ];
-  return JSON.stringify(getUnsafeOptions(defaultOptions)) !== JSON.stringify(getUnsafeOptions(options));
+  return (
+    JSON.stringify(getUnsafeOptions(defaultOptions)) !==
+    JSON.stringify(getUnsafeOptions(options))
+  );
 };
 
 Packager.DEFAULT_OPTIONS = () => ({
@@ -1559,25 +1750,25 @@ Packager.DEFAULT_OPTIONS = () => ({
   miscLimits: true,
   stageWidth: 480,
   stageHeight: 360,
-  resizeMode: 'preserve-ratio',
+  resizeMode: "preserve-ratio",
   autoplay: false,
-  username: 'player####',
+  username: "player####",
   closeWhenStopped: false,
-  projectId: '',
+  projectId: "",
   custom: {
-    css: '',
-    js: ''
+    css: "",
+    js: "",
   },
   appearance: {
-    background: '#000000',
-    foreground: '#ffffff',
-    accent: ACCENT_COLOR
+    background: "#000000",
+    foreground: "#ffffff",
+    accent: ACCENT_COLOR,
   },
   loadingScreen: {
     progressBar: true,
-    text: '',
-    imageMode: 'normal',
-    image: null
+    text: "",
+    imageMode: "normal",
+    image: null,
   },
   controls: {
     greenFlag: {
@@ -1587,52 +1778,62 @@ Packager.DEFAULT_OPTIONS = () => ({
       enabled: false,
     },
     fullscreen: {
-      enabled: false
+      enabled: false,
     },
     pause: {
-      enabled: false
-    }
+      enabled: false,
+    },
   },
   monitors: {
     editableLists: false,
-    variableColor: '#ff8c1a',
-    listColor: '#fc662c'
+    variableColor: "#ff8c1a",
+    listColor: "#fc662c",
   },
   compiler: {
     enabled: true,
-    warpTimer: false
+    warpTimer: false,
   },
   packagedRuntime: true,
-  target: 'html',
+  target: "html",
   app: {
     icon: null,
-    packageName: Packager.getDefaultPackageNameFromFileName(''),
-    windowTitle: Packager.getWindowTitleFromFileName(''),
-    windowMode: 'window',
-    version: '1.0.0'
+    packageName: Packager.getDefaultPackageNameFromFileName(""),
+    windowTitle: Packager.getWindowTitleFromFileName(""),
+    windowMode: "window",
+    version: "1.0.0",
   },
   chunks: {
     gamepad: false,
     pointerlock: false,
   },
+  // https://scratch.mit.edu/discuss/topic/509859/
+  // https://clouddata.scratch.mit.edu/logs?projectid=488029945&limit=1&offset=0
+  // https://www.quora.com/What-is-the-difference-between-http-https-ws-and-wss
+  // cloudHost: 'wss://mixality.github.io/Sidekick/clouddata',
+  // cloudHost: 'wss://menersar.github.io/Sidekick/clouddata',
+  // !!!! CHANGE !!!!
   cloudVariables: {
-    mode: 'ws',
-    cloudHost: 'wss://clouddata.turbowarp.org',
+    mode: "ws",
+    
+    // !!!!!HERE!!!!!
+    // cloudHost: "wss://clouddata.turbowarp.org",
+    cloudHost: "wss://clouddata.scratch.mit.edu",
+
     custom: {},
     specialCloudBehaviors: false,
     unsafeCloudBehaviors: false,
   },
   cursor: {
-    type: 'auto',
+    type: "auto",
     custom: null,
     center: {
       x: 0,
-      y: 0
-    }
+      y: 0,
+    },
   },
   extensions: [],
   bakeExtensions: true,
-  maxTextureDimension: 2048
+  maxTextureDimension: 2048,
 });
 
 export default Packager;

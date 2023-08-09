@@ -1,13 +1,13 @@
 /* inserted by pull.js */
-import _twAsset0 from "./active.png";
-import _twAsset1 from "./close.svg";
-import _twAsset2 from "./cursor.png";
-import _twAsset3 from "./dot.svg";
-const _twGetAsset = (path) => {
-  if (path === "/active.png") return _twAsset0;
-  if (path === "/close.svg") return _twAsset1;
-  if (path === "/cursor.png") return _twAsset2;
-  if (path === "/dot.svg") return _twAsset3;
+import _sidekickAsset0 from "./active.png";
+import _sidekickAsset1 from "./close.svg";
+import _sidekickAsset2 from "./cursor.png";
+import _sidekickAsset3 from "./dot.svg";
+const _sidekickGetAsset = (path) => {
+  if (path === "/active.png") return _sidekickAsset0;
+  if (path === "/close.svg") return _sidekickAsset1;
+  if (path === "/cursor.png") return _sidekickAsset2;
+  if (path === "/dot.svg") return _sidekickAsset3;
   throw new Error(`Unknown asset: ${path}`);
 };
 
@@ -48,7 +48,10 @@ export default async function (scaffolding, pointerlock) {
     const result = new Set();
     for (const blocks of allBlocks) {
       for (const block of Object.values(blocks._blocks)) {
-        if (block.opcode === "event_whenkeypressed" || block.opcode === "sensing_keyoptions") {
+        if (
+          block.opcode === "event_whenkeypressed" ||
+          block.opcode === "sensing_keyoptions"
+        ) {
           // For blocks like "key (my variable) pressed?", the sensing_keyoptions still exists but has a null parent.
           if (block.opcode === "sensing_keyoptions" && !block.parent) {
             continue;
@@ -77,16 +80,26 @@ export default async function (scaffolding, pointerlock) {
     if (!comment) {
       return null;
     }
-    const lineWithMagic = comment.text.split("\n").find((i) => i.endsWith(GAMEPAD_CONFIG_MAGIC));
+    const lineWithMagic = comment.text
+      .split("\n")
+      .find((i) => i.endsWith(GAMEPAD_CONFIG_MAGIC));
     if (!lineWithMagic) {
       console.warn("Gamepad comment does not contain valid line");
       return null;
     }
-    const jsonText = lineWithMagic.substr(0, lineWithMagic.length - GAMEPAD_CONFIG_MAGIC.length);
+    const jsonText = lineWithMagic.substr(
+      0,
+      lineWithMagic.length - GAMEPAD_CONFIG_MAGIC.length
+    );
     let parsed;
     try {
       parsed = JSON.parse(jsonText);
-      if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.buttons) || !Array.isArray(parsed.axes)) {
+      if (
+        !parsed ||
+        typeof parsed !== "object" ||
+        !Array.isArray(parsed.buttons) ||
+        !Array.isArray(parsed.axes)
+      ) {
         throw new Error("Invalid data");
       }
     } catch (e) {
@@ -119,7 +132,7 @@ export default async function (scaffolding, pointerlock) {
   const virtualCursorElement = document.createElement("img");
   virtualCursorElement.hidden = true;
   virtualCursorElement.className = "sa-gamepad-cursor";
-  virtualCursorElement.src = _twGetAsset("/cursor.png");
+  virtualCursorElement.src = _sidekickGetAsset("/cursor.png");
 
   let hideCursorTimeout;
 
@@ -158,7 +171,7 @@ export default async function (scaffolding, pointerlock) {
   });
 
   let getCanvasSize;
-  // Support modern ResizeObserver and slow getBoundingClientRect version for improved browser support (matters for TurboWarp)
+  // Support modern ResizeObserver and slow getBoundingClientRect version for improved browser support (matters for Sidekick).
   if (window.ResizeObserver) {
     let canvasWidth = width;
     let canvasHeight = height;
@@ -215,7 +228,7 @@ export default async function (scaffolding, pointerlock) {
     });
   };
   const handleGamepadMouseMove = (e) => {
-    const {x, y} = e.detail;
+    const { x, y } = e.detail;
     if (pointerlock) {
       const deltaX = x - virtualX;
       const deltaY = -(y - virtualY);
@@ -223,8 +236,10 @@ export default async function (scaffolding, pointerlock) {
       virtualY = y;
       // Coordinates that pointerlock accepts are in "screen space" but virtual cursor is in "stage space"
       const SPEED_MULTIPLIER = 4.0;
-      const zoomMultiplierX = scaffolding.layersRect.width / vm.runtime.stageWidth;
-      const zoomMultiplierY = scaffolding.layersRect.height / vm.runtime.stageHeight;
+      const zoomMultiplierX =
+        scaffolding.layersRect.width / vm.runtime.stageWidth;
+      const zoomMultiplierY =
+        scaffolding.layersRect.height / vm.runtime.stageHeight;
       // This is defined in pointerlock addon
       vm.pointerLockMove(
         deltaX * SPEED_MULTIPLIER * zoomMultiplierX,

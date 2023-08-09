@@ -135,7 +135,7 @@ const optimizeSb3Json = (projectData) => {
     }
     for (const [commentId, comment] of Object.entries(target.comments)) {
       const text = comment.text;
-      const isSpecial = text.includes(' // _twconfig_') || text.includes(' // _gamepad_');
+      const isSpecial = text.includes(' // _sidekickconfig_') || text.includes(' // _gamepad_');
       if (isSpecial) {
         newComments[commentId] = comment;
       }

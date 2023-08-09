@@ -888,7 +888,9 @@ cd "$(dirname "$0")"
     // !!! CHANGE !!!
     const cloudHost =
       this.options.cloudVariables.cloudHost ===
+      // "wss://clouddata.turbowarp.org"
       "wss://clouddata.scratch.mit.edu"
+        // ? ["wss://clouddata.turbowarp.org", "wss://clouddata.turbowarp.xyz"]
         ? [
             // !!! CHANGE !!!
             // !!!!!HERE!!!!!
@@ -1807,8 +1809,9 @@ Packager.DEFAULT_OPTIONS = () => ({
   // !!!! CHANGE !!!!
   cloudVariables: {
     mode: "ws",
-
+    
     // !!!!!HERE!!!!!
+    // cloudHost: "wss://clouddata.turbowarp.org",
     cloudHost: "wss://clouddata.scratch.mit.edu",
 
     custom: {},
