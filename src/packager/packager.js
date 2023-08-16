@@ -1820,7 +1820,8 @@ Packager.DEFAULT_OPTIONS = () => ({
     
     // !!!!!HERE!!!!!
     // cloudHost: "wss://clouddata.turbowarp.org",
-    cloudHost: "wss://clouddata.scratch.mit.edu",
+    // cloudHost: "wss://clouddata.scratch.mit.edu",
+    cloudHost: "ws:localhost:9080",
 
     custom: {},
     specialCloudBehaviors: false,
