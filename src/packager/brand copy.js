@@ -30,7 +30,7 @@ module.exports = {
   APP_NAME: "Sidekick Packager",
   // !!! CHANGE !!!
   //   WEBSITE: 'https://mixality.github.io/Sidekick/packager/',
-  WEBSITE: "https://menersar.github.io/Sidekick/packager/",
+  WEBSITE: "https://menersar.github.io/Sidekick/sidekick-packager/",
   COPYRIGHT_NOTICE: `Copyright (C) 2021-2022 Thomas Weber
     
     Licensed under the Apache License, Version 2.0 (the "License");
