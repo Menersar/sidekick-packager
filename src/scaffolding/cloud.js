@@ -110,6 +110,7 @@ class WebSocketProvider {
     console.log(`Connecting to ${this.currentCloudHost} with ID ${this.projectId}, username ${this.manager.getUsername()}`);
     try {
       // Don't try to validate the cloud host ourselves. Let the browser do it.
+      // !!! 'Edge cases', 'being considered secure', 'too complex to handle correctly'? ???
       // Edge cases like ws://localhost being considered secure are too complex to handle correctly.
       this.ws = new WebSocket(this.currentCloudHost);
     } catch (e) {

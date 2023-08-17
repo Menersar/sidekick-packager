@@ -125,7 +125,7 @@ const CFBundleIdentifier = "CFBundleIdentifier";
 // Even if you fork the packager, you shouldn't change this string unless you want packaged macOS apps
 // to lose all their data.
 // !!! CHANGE !!!
-const bundleIdentifierPrefix = "org.turbowarp.packager.userland.";
+const bundleIdentifierPrefix = "de.mixality.sidekick-packager.userland.";
 
 // CFBundleName is displayed in the menu bar.
 // I'm not actually sure where CFBundleDisplayName is displayed.
@@ -889,15 +889,16 @@ cd "$(dirname "$0")"
     // !!! CHANGE !!!
     const cloudHost =
       this.options.cloudVariables.cloudHost ===
-    //   "wss://clouddata.turbowarp.org"
-      "wss://clouddata.scratch.mit.edu"
+      // "wss://clouddata.turbowarp.org"
+      // "wss://clouddata.scratch.mit.edu"
+      "ws:localhost:8080"
         ? [
             // !!! CHANGE !!!
             // !!!!!HERE!!!!!
-            "wss://clouddata.scratch.mit.edu",
+            "ws:localhost:8080",
             // "wss://clouddata.scratch.mit.edu"
-
-            // "wss://clouddata.turbowarp.org", 
+            "ws:localhost:8080",
+            // "wss://clouddata.turbowarp.org",
             // "wss://clouddata.turbowarp.xyz"
           ]
         : this.options.cloudVariables.cloudHost;
@@ -1817,7 +1818,7 @@ Packager.DEFAULT_OPTIONS = () => ({
   // !!!! CHANGE !!!!
   cloudVariables: {
     mode: "ws",
-    
+
     // !!!!!HERE!!!!!
     // cloudHost: "wss://clouddata.turbowarp.org",
     // cloudHost: "wss://clouddata.scratch.mit.edu",

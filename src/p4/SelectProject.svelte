@@ -317,10 +317,10 @@
               // text: "https://docs.turbowarp.org/unshared-projects",
               // href: "https://docs.turbowarp.org/unshared-projects",
               // text: 'https://github.com/Mixality/Sidekick#unshared-projects',
-              text: "https://github.com/Menersar/Sidekick#unshared-projects",
+              text: "https://menersar.github.io/Sidekick/docs#unshared-projects",
               // !!! CHANGE !!!
               // href: 'https://github.com/Mixality/Sidekick#unshared-projects',
-              href: "https://github.com/Menersar/Sidekick#unshared-projects",
+              href: "https://menersar.github.io/Sidekick/docs#unshared-projects",
               newTab: true,
             },
           }}

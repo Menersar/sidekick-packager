@@ -153,3 +153,8 @@ packager.addEventListener('large-asset-fetch', ({detail}) => {
 What you do with `data` is now entirely up to you.
 
 Be mindful of the copyright on the projects you package.
+
+<!-- Examples of valid values: -->
+<!-- (Source: src/p4/PackagerOptions.svelte) -->
+<!-- wss://clouddata.turbowarp.org -->
+<!-- ws:localhost:8080 -->

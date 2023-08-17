@@ -1,6 +1,6 @@
 {
   "name": "sidekick-packager",
-  "version": "1.8.0",
+  "version": "0.1.0",
   "description": "Converts Scratch projects into HTML files, zip archives, or executable programs for Windows, macOS, and Linux; version customized for Sidekick.",
   "main": "dist/packager.js",
   "scripts": {

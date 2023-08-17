@@ -78,7 +78,7 @@
               // !!! CHANGE !!!
               // href: "https://docs.turbowarp.org/embedding",
               // href: 'https://github.com/Mixality/Sidekick#embedding'
-              href: "https://github.com/Menersar/Sidekick#embedding",
+              href: "https://menersar.github.io/Sidekick/docs#embedding",
             },
           }}
         />
@@ -168,7 +168,7 @@
       <!-- !!! CHANGE !!! -->
       <!-- <a href="https://docs.turbowarp.org/packager">{$_("p4.documentation")}</a> -->
       <!-- <a href="https://github.com/Mixality/Sidekick#packager">{$_('p4.documentation')}</a> -->
-      <a href="https://github.com/Menersar/Sidekick#packager"
+      <a href="https://menersar.github.io/Sidekick/docs#packager"
         >{$_("p4.documentation")}</a
       >
     </div>

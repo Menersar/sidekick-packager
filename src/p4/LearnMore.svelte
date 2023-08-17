@@ -7,7 +7,7 @@
   // !!! CHANGE !!!
   // const link = slug ? `https://docs.turbowarp.org/${slug}` : href;
   // const link = slug ? `https://github.com/Mixality/Sidekick#${slug}` : href;
-  const link = slug ? `https://github.com/Menersar/Sidekick#${slug}` : href;
+  const link = slug ? `https://menersar.github.io/Sidekick/docs#${slug}` : href;
 </script>
 
 <a

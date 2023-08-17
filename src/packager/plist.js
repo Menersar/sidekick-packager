@@ -1,3 +1,4 @@
+// !!! CHANGE !!!
 // Parses and generates Apple Info.plist files
 // Example file:
 /*
@@ -16,7 +17,7 @@
   <key>CFBundleIconName</key>
   <string>AppIcon</string>
   <key>CFBundleIdentifier</key>
-  <string>org.turbowarp.webviews.mac</string>
+  <string>de.mixality.webviews.mac</string>
   <key>CFBundleInfoDictionaryVersion</key>
   <string>6.0</string>
   <key>CFBundleName</key>

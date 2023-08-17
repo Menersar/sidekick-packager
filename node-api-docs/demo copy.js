@@ -13,6 +13,7 @@ const run = async () => {
   // !!! CHANGE !!!
   // const projectMetadata = await (await fetch(`https://trampoline.turbowarp.org/api/projects/${id}`)).json();
 
+  // (Source: https://docs.turbowarp.org/unshared-projects#developers:~:text=If%20you%27re%20using,full%20project%20downloader.)
   const projectMetadata = await (await fetch(`https://api.scratch.mit.edu/projects/${id}`)).json();
   
   
