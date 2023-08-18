@@ -1,7 +1,7 @@
 // These will be replaced at build-time by generate-service-worker-plugin.js
-const ASSETS = ["","js/download-project.307880fa10fd08800082.worker.js","js/p4.1ff11fd80fbca5886d97.js"];
-const CACHE_NAME = "p4-8b27c698f9a43fa73635b209d2d47c7aa8ef692f4f5a775ef94b2de2678d25d0";
-const IS_PRODUCTION = true;
+const ASSETS = ["","js/download-project.worker.js","assets/reset.1b7c2728718a119273c903df95ab4c2a.svg","assets/default-icon.290e09e569a1cab8e61ba93b0d23863f.png","js/icns.js","js/jszip.js","js/p4.js","js/packager-options-ui.js","js/sha256.js","js/vendors~icns~jszip.js","js/vendors~icns~jszip~sha256.js"];
+const CACHE_NAME = "p4-8f0ced6a4393e901c36f19fe079ea2437ba709bdd92e765e22ea2cc0fb736cfe";
+const IS_PRODUCTION = false;
 
 const base = location.pathname.substr(0, location.pathname.indexOf('sw.js'));
 
