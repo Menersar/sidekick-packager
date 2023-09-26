@@ -143,7 +143,13 @@ const makeWebsite = () => ({
       svelte: path.resolve('node_modules', 'svelte')
     },
     extensions: ['.mjs', '.js', '.svelte'],
-    mainFields: ['svelte', 'browser', 'module', 'main']
+    mainFields: ['svelte', 'browser', 'module', 'main'],
+    // // Source: https://github.com/sveltejs/svelte-loader#resolveconditionnames
+    // // (To solve: 'WARNING: You should add "svelte" to the "resolve.conditionNames" array in your webpack config.')
+    // // Webpack's resolve.conditionNames option determines which fields in the exports in package.json are used to resolve identifiers.
+    // // If using Svelte components installed from npm, this option should be specified, so:
+    // // The app can use the original component source code, rather than consuming the already-compiled version (which is less efficient).
+    // conditionNames: ['svelte', 'browser', 'import']
   },
   optimization: {
     splitChunks: {

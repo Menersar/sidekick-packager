@@ -1,5 +1,12 @@
 # Node.js API
 
+npm run install
+
+npm run build-standalone-prod
+
+See / use hash ('Scaffolding build ID:' …) in Terminal for '"sha256": "_"' to download standalone packager from 'sidekick-desktop/scripts/packager.json'.
+(Generated in file 'src/build/generate-scaffolding-build-id'.)
+
 ## Installing
 
 ```bash
