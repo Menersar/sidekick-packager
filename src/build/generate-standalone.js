@@ -1,6 +1,7 @@
 const pathUtil = require('path');
 const fs = require('fs');
 const glob = require('glob');
+var pjson = require('../../package.json');
 
 const dist = pathUtil.join(__dirname, '..', '..', 'dist');
 console.log(`dist: ${dist}`);
@@ -48,6 +49,6 @@ newContent = newContent.replace(/<script src=".*"><\/script>/, () => (
   `${standaloneJS}<script>${makeSafeForInlineScript(jsContent)}</script>`
 ));
 
-const standalonePath = pathUtil.join(dist, 'standalone.html');
-console.log(`standalone.html: ${standalonePath}`);
+const standalonePath = pathUtil.join(dist, 'sidekick-packager-standalone-v' + pjson.version + '.html');
+console.log(`sidekick-packager-standalone-v${pjson.version}.html: ${standalonePath}`);
 fs.writeFileSync(standalonePath, newContent);
