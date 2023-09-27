@@ -116,7 +116,7 @@ test('invalid project', async () => {
 test('custom extensions', async () => {
   const project = await downloadProject(readTestProject('fetch.sb3'), () => {});
   expect(project.analysis.extensions).toStrictEqual([
-    // 'https://menersar.github.io/Sidekick/sidekick-extensions/fetch.js'
+    // 'https://menersar.github.io/sidekick-extensions/fetch.js'
     'https://extensions.turbowarp.org/fetch.js'
   ]);
 });
