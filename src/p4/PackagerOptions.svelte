@@ -963,6 +963,10 @@
           {$_("options.application-win64").replace("{type}", "Electron")}
         </label>
         <label class="option">
+          <input type="radio" name="environment" bind:group={$options.target} value="electron-win-arm">
+          {$_('options.application-win-arm').replace('{type}', 'Electron')}
+        </label>
+        <label class="option">
           <input
             type="radio"
             name="environment"
@@ -971,7 +975,16 @@
           />
           {$_("options.application-mac").replace("{type}", "Electron")}
         </label>
+        <label class="option">
+          <input type="radio" name="environment" bind:group={$options.target} value="electron-linux-arm32">
+          {$_('options.application-linux-arm32').replace('{type}', 'Electron')}
+        </label>
+        <label class="option">
+          <input type="radio" name="environment" bind:group={$options.target} value="electron-linux-arm64">
+          {$_('options.application-linux-arm64').replace('{type}', 'Electron')}
+        </label>
       </div>
+
       <div class="group">
         <label class="option">
           <input
@@ -1037,12 +1050,7 @@
           <h2>{$_("options.applicationSettings")}</h2>
           <label class="option">
             {$_("options.packageName")}
-            <input
-              type="text"
-              bind:value={$options.app.packageName}
-              pattern="[a-zA-Z -]+"
-              minlength="1"
-            />
+            <input type="text" bind:value={$options.app.packageName} pattern="[\w \-]+" minlength="1">
           </label>
           <p>{$_("options.packageNameHelp")}</p>
 
@@ -1162,7 +1170,7 @@
           {:else if $options.target.includes("linux")}
             <div>
               <h2>Linux</h2>
-              <p>Linux support is still experimental.</p>
+              <p>Linux support in the packager is limited to 64-bit x86 apps (which will run on most desktops and laptops). 32-bit systems and ARM devices such as Raspberry Pis unfortunately are not supported yet.</p>
               <p>
                 Linux support in the packager is limited to 64-bit x86 apps
                 (which will run on most desktops and laptops). 32-bit systems
@@ -1181,7 +1189,11 @@
                 which means the app will be very large.
               </p>
 
-              {#if $options.target.includes("mac")}
+              {#if $options.target.includes('win')}
+                {#if $options.target.includes('32')}
+                  <p>Note: You have selected the 32-bit or 64-bit mode. This maximizes device compatibility but limits the amount of memory the app can use. If you encounter crashes, try going into "Other environments" and using the 64-bit only mode instead.</p>
+                {/if}
+              {:else if $options.target.includes('mac')}
                 <p>
                   On macOS, the app will run natively on both Intel Silicon and
                   Apple Silicon Macs.
@@ -1191,15 +1203,6 @@
                   On Linux, the application can be started by running <code
                     >start.sh</code
                   >
-                </p>
-              {/if}
-
-              {#if $options.target.includes("32")}
-                <p>
-                  Note: You have selected the 32-bit or 64-bit mode. This
-                  maximizes device compatibility but limits the amount of memory
-                  the app can use. If you encounter crashes, try going into
-                  "Other environments" and using the 64-bit only mode instead.
                 </p>
               {/if}
             </div>

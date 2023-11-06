@@ -1,6 +1,6 @@
 // These will be replaced at build-time by generate-service-worker-plugin.js
-const ASSETS = ["","js/download-project.307880fa10fd08800082.worker.js","js/p4.2c01a22528cac3458e2d.js"];
-const CACHE_NAME = "p4-82de8a328e961c64c2c77cc537d2bd00e7bd356d7eb7f84fc52c3e9e8d6e1abd";
+const ASSETS = ["","js/download-project.307880fa10fd08800082.worker.js","js/p4.d85f128783aa9b6ab573.js"];
+const CACHE_NAME = "p4-68e10ff55c462b8bfbb02ec45270a5b7287c3e0a74b274cae235b9e6f5374ddb";
 const IS_PRODUCTION = true;
 
 const base = location.pathname.substr(0, location.pathname.indexOf('sw.js'));

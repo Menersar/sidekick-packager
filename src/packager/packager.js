@@ -172,6 +172,17 @@ After completing these steps, the app should run without any further warnings.
 Feel free to drag the app into your Applications folder.
 `;
 
+/**
+ * @param {string} packageName
+ */
+const validatePackageName = (packageName) => {
+  // Characters considered unsafe filenames on Windows.
+  const BLOCKLIST = ['/', '\\', ':', '*', '?', '<', '>', '|'];
+  if (BLOCKLIST.some((i) => packageName.includes(i))) {
+    throw new Error(`Invalid package name: ${packageName}. It must not use the characters: ${BLOCKLIST.join(' ')}`)
+  }
+};
+
 class Packager extends EventTarget {
   constructor() {
     super();
@@ -325,6 +336,9 @@ class Packager extends EventTarget {
   }
 
   async addNwJS(projectZip) {
+    const packageName = this.options.app.packageName;
+    validatePackageName(packageName);
+
     const nwjsBuffer = await this.fetchLargeAsset(
       this.options.target,
       "arraybuffer"
@@ -362,7 +376,7 @@ class Packager extends EventTarget {
 
     const zip = new (await getJSZip())();
 
-    const packageName = this.options.app.packageName;
+    // const packageName = this.options.app.packageName;
 
     // Copy NW.js files to the right place
     for (const path of Object.keys(nwjsZip.files)) {
@@ -446,6 +460,9 @@ cd "$(dirname "$0")"
   }
 
   async addElectron(projectZip) {
+    const packageName = this.options.app.packageName;
+    validatePackageName(packageName);
+
     const buffer = await this.fetchLargeAsset(
       this.options.target,
       "arraybuffer"
@@ -495,8 +512,9 @@ cd "$(dirname "$0")"
     //          +-- index.html and the other project files (we will create this)
     // +-- LICENSES.chromium.html and other license files
 
-    const zip = new (await getJSZip())();
-    const packageName = this.options.app.packageName;
+    // const zip = new (await getJSZip())();
+    const zip = new (await getJSZip());
+    // const packageName = this.options.app.packageName;
     for (const path of Object.keys(electronZip.files)) {
       const file = electronZip.files[path];
 
@@ -730,6 +748,16 @@ app.on('web-contents-created', (event, contents) => {
   });
 });
 
+app.on('session-created', (session) => {
+  session.webRequest.onBeforeRequest({
+    urls: ["file://*"]
+  }, (details, callback) => {
+    callback({
+      cancel: !details.url.startsWith(resourcesURL)
+    });
+  });
+});
+
 app.on('window-all-closed', () => {
   app.quit();
 });
@@ -807,6 +835,7 @@ cd "$(dirname "$0")"
   }
 
   async addWebViewMac(projectZip) {
+    validatePackageName(this.options.app.packageName);
     const buffer = await this.fetchLargeAsset(
       this.options.target,
       "arraybuffer"
@@ -1571,11 +1600,8 @@ cd "$(dirname "$0")"
       }
 
       scaffolding.setExtensionSecurityManager({
-        getSandboxMode: 'unsandboxed',
-        canLoadExtensionFromProject: (url) => {
-          handleError(new Error('Missing custom extension: ' + url));
-          return Promise.resolve(false);
-        }
+        getSandboxMode: () => 'unsandboxed',
+        canLoadExtensionFromProject: () => true
       });
       for (const extension of ${JSON.stringify(
         await this.generateExtensionURLs()

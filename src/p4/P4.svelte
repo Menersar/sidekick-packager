@@ -161,8 +161,11 @@
         <a href={SOURCE_CODE}>{$_("p4.sourceCode")}</a>
       {/if}
       {#if DONATE}
-        <span> - </span>
-        <a href={DONATE}>{$_("p4.donate")}</a>
+        <!-- Donation link needs to be wrapped in another element to hide it in the Mac App Store. -->
+        <span class="donate-link">
+          <span> - </span>
+          <a href={DONATE}>{$_('p4.donate')}</a>
+        </span>
       {/if}
     </div>
     <div>
@@ -185,6 +188,8 @@
 <style>
   :root {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: white;
+    color: black;
   }
   :global([theme="dark"]) {
     background: #111;
